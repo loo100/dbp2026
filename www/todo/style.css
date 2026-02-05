@@ -1,0 +1,74 @@
+/* style.css */
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    padding-top: 50px;
+    background-color: #f4f4f9;
+}
+
+.todo-container {
+    width: 350px;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.input-group {
+    display: flex; /* 使用 Flexbox 讓輸入框和按鈕並排 */
+    gap: 10px;
+}
+
+input {
+    flex: 1; /* 讓輸入框佔滿剩餘空間 */
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+button {
+    padding: 8px 15px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+ul {
+    list-style: none; /* 移除預設的清單圓點 */
+    padding: 0;
+    margin-top: 20px;
+}
+
+li {
+    background: #fff;
+    border-bottom: 1px solid #eee;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between; /* 讓文字和刪除按鈕分開到兩端 */
+    align-items: center;
+}
+
+.delete-btn {
+    background-color: #dc3545;
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
+/* 當任務被標記為完成時的樣式 */
+.completed {
+    text-decoration: line-through; /* 加上刪除線 */
+    color: #888;                  /* 讓顏色變淡，表示已完成 */
+}
+
+/* 讓任務文字滑鼠移上去時顯示為手指形狀，提醒使用者可以點擊 */
+li span {
+    cursor: pointer;
+    flex: 1; /* 讓文字佔滿剩餘空間，方便點擊 */
+}
