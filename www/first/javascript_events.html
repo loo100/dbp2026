@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript 事件監聽示範</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', '微軟正黑體', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 36px;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 16px;
+        }
+
+        section {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        section h2 {
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 24px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #555;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        /* ==================== 按鈕樣式 ==================== */
+        button, input[type="button"] {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        /* ==================== 演示容器 ==================== */
+        .demo-box {
+            background: #f0f0f0;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .demo-output {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 10px;
+            min-height: 50px;
+            color: #333;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        /* ==================== 事件演示元素 ==================== */
+        .event-element {
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            text-align: center;
+            color: white;
+            font-weight: bold;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .event-element:hover {
+            transform: scale(1.02);
+        }
+
+        .click-demo {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .dblclick-demo {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .mouseenter-demo {
+            background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+        }
+
+        .focus-demo {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+
+        .focus-demo:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* ==================== 事件日誌 ==================== */
+        .event-log {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            height: 200px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+
+        .log-entry {
+            padding: 5px 0;
+            border-bottom: 1px solid #444;
+            color: #a1efe4;
+        }
+
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+
+        .log-time {
+            color: #f8f8f2;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        /* ==================== 程式碼塊 ==================== */
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            margin: 15px 0;
+            border-left: 4px solid #667eea;
+            line-height: 1.5;
+        }
+
+        /* ==================== 說明卡片 ==================== */
+        .description {
+            background: rgba(102, 126, 234, 0.1);
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            color: #333;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .comparison-table th {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        /* ==================== 按鍵和滑鼠資訊 ==================== */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .info-box {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 12px;
+            font-size: 13px;
+        }
+
+        .info-box strong {
+            color: #667eea;
+        }
+
+        /* ==================== 響應式 ==================== */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 28px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            section {
+                padding: 20px;
+            }
+
+            .comparison-table {
+                font-size: 12px;
+            }
+        }
+
+        footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            padding: 30px 20px;
+            font-size: 14px;
+        }
+
+        .clear-log-btn {
+            background: #667eea;
+            padding: 8px 15px;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📡 JavaScript 事件監聽詳細示範</h1>
+        <p class="subtitle">深入理解事件監聽的各種方法和應用</p>
+
+        <!-- ==================== 基礎事件監聽 ==================== -->
+        <section>
+            <h2>🎯 基礎事件監聽方法</h2>
+
+            <h3>1. 內聯事件處理器 (Inline)</h3>
+            <div class="demo-box">
+                <button onclick="handleInlineClick()">點擊我 (內聯)</button>
+                <div class="demo-output" id="inline-output">事件未觸發</div>
+            </div>
+
+            <div class="code-block">
+&lt;button onclick="handleInlineClick()"&gt;點擊我&lt;/button&gt;
+
+&lt;script&gt;
+function handleInlineClick() {
+    console.log('按鈕被點擊了');
+}
+&lt;/script&gt;
+            </div>
+
+            <h3>2. 事件屬性方式 (Event Property)</h3>
+            <div class="demo-box">
+                <button id="event-prop-btn">點擊我 (屬性)</button>
+                <div class="demo-output" id="event-prop-output">事件未觸發</div>
+            </div>
+
+            <div class="code-block">
+const btn = document.getElementById('event-prop-btn');
+btn.onclick = function() {
+    console.log('按鈕被點擊了');
+};
+            </div>
+
+            <h3>3. addEventListener 方式 (推薦) ⭐</h3>
+            <div class="demo-box">
+                <button id="add-event-btn">點擊我 (addEventListener)</button>
+                <div class="demo-output" id="add-event-output">事件未觸發</div>
+            </div>
+
+            <div class="code-block">
+const btn = document.getElementById('add-event-btn');
+btn.addEventListener('click', function(event) {
+    console.log('按鈕被點擊了');
+    console.log('事件對象:', event);
+});
+            </div>
+
+            <div class="description">
+                <strong>三種方式的對比：</strong><br>
+                • <strong>內聯</strong> - 簡單但不推薦，混合 HTML 和 JS<br>
+                • <strong>事件屬性</strong> - 可以綁定，但只能有一個監聽器<br>
+                • <strong>addEventListener</strong> - 推薦！可以多個監聽器，易於移除
+            </div>
+        </section>
+
+        <!-- ==================== 常見滑鼠事件 ==================== -->
+        <section>
+            <h2>🖱️ 常見滑鼠事件</h2>
+
+            <h3>Click vs DblClick 事件</h3>
+            <div class="demo-box">
+                <div class="event-element click-demo" id="click-element">
+                    單擊我
+                </div>
+                <div class="event-element dblclick-demo" id="dblclick-element">
+                    雙擊我
+                </div>
+                <div class="demo-output" id="click-dblclick-output">事件未觸發</div>
+            </div>
+
+            <h3>Mouse Enter / Leave 事件</h3>
+            <div class="demo-box">
+                <div class="event-element mouseenter-demo" id="mouseenter-element">
+                    將滑鼠移到這裡
+                </div>
+                <div class="demo-output" id="mouseenter-output">事件未觸發</div>
+            </div>
+
+            <h3>Mouse Move 事件 (追蹤座標)</h3>
+            <div class="demo-box">
+                <div class="event-element" id="mousemove-element" style="background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%); height: 150px; display: flex; align-items: center; justify-content: center;">
+                    在這裡移動滑鼠
+                </div>
+                <div class="demo-output" id="mousemove-output">
+                    座標: X = 0, Y = 0
+                </div>
+            </div>
+
+            <div class="code-block">
+element.addEventListener('click', (event) => {
+    console.log('單擊');
+});
+
+element.addEventListener('dblclick', (event) => {
+    console.log('雙擊');
+});
+
+element.addEventListener('mouseenter', (event) => {
+    console.log('滑鼠進入');
+});
+
+element.addEventListener('mousemove', (event) => {
+    console.log('座標:', event.clientX, event.clientY);
+});
+            </div>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>事件名稱</th>
+                        <th>說明</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>click</td>
+                        <td>滑鼠單擊</td>
+                    </tr>
+                    <tr>
+                        <td>dblclick</td>
+                        <td>滑鼠雙擊</td>
+                    </tr>
+                    <tr>
+                        <td>mouseenter</td>
+                        <td>滑鼠進入元素 (不冒泡)</td>
+                    </tr>
+                    <tr>
+                        <td>mouseover</td>
+                        <td>滑鼠進入元素 (會冒泡)</td>
+                    </tr>
+                    <tr>
+                        <td>mouseleave</td>
+                        <td>滑鼠離開元素 (不冒泡)</td>
+                    </tr>
+                    <tr>
+                        <td>mouseout</td>
+                        <td>滑鼠離開元素 (會冒泡)</td>
+                    </tr>
+                    <tr>
+                        <td>mousemove</td>
+                        <td>滑鼠移動</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- ==================== 鍵盤事件 ==================== -->
+        <section>
+            <h2>⌨️ 鍵盤事件</h2>
+
+            <h3>Keydown, Keyup, Keypress 事件</h3>
+            <div class="demo-box">
+                <input type="text" class="focus-demo" id="key-input" placeholder="在這裡按鍵試試...">
+                <div class="event-log" id="key-log"></div>
+                <button class="clear-log-btn" onclick="clearLog('key-log')">清除日誌</button>
+            </div>
+
+            <h3>按鍵資訊</h3>
+            <div class="demo-box">
+                <input type="text" class="focus-demo" id="key-info-input" placeholder="按鍵查看詳細資訊...">
+                <div class="info-grid">
+                    <div class="info-box">
+                        <strong>鍵名稱:</strong> <span id="key-name">-</span>
+                    </div>
+                    <div class="info-box">
+                        <strong>鍵代碼:</strong> <span id="key-code">-</span>
+                    </div>
+                    <div class="info-box">
+                        <strong>是否 Shift:</strong> <span id="shift-key">-</span>
+                    </div>
+                    <div class="info-box">
+                        <strong>是否 Ctrl:</strong> <span id="ctrl-key">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-block">
+element.addEventListener('keydown', (event) => {
+    console.log('按鍵按下:', event.key);
+    console.log('鍵代碼:', event.keyCode);
+    console.log('是否 Shift:', event.shiftKey);
+    console.log('是否 Ctrl:', event.ctrlKey);
+});
+
+element.addEventListener('keyup', (event) => {
+    console.log('按鍵抬起:', event.key);
+});
+            </div>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>事件名稱</th>
+                        <th>說明</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>keydown</td>
+                        <td>按鍵按下時觸發 (持續)</td>
+                    </tr>
+                    <tr>
+                        <td>keyup</td>
+                        <td>按鍵抬起時觸發</td>
+                    </tr>
+                    <tr>
+                        <td>keypress</td>
+                        <td>按鍵按下時觸發 (已棄用)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- ==================== 表單事件 ==================== -->
+        <section>
+            <h2>📋 表單事件</h2>
+
+            <h3>Focus / Blur 事件</h3>
+            <div class="demo-box">
+                <input type="text" class="focus-demo" id="focus-input" placeholder="點擊聚焦...">
+                <div class="demo-output" id="focus-output">未聚焦</div>
+            </div>
+
+            <h3>Change 事件</h3>
+            <div class="demo-box">
+                <select class="focus-demo" id="change-select">
+                    <option value="">-- 選擇一個選項 --</option>
+                    <option value="option1">選項 1</option>
+                    <option value="option2">選項 2</option>
+                    <option value="option3">選項 3</option>
+                </select>
+                <div class="demo-output" id="change-output">未選擇</div>
+            </div>
+
+            <h3>Input 事件 (實時輸入)</h3>
+            <div class="demo-box">
+                <input type="text" class="focus-demo" id="input-realtime" placeholder="實時輸入檢測...">
+                <div class="demo-output" id="input-realtime-output">字數: 0</div>
+            </div>
+
+            <h3>Submit 事件</h3>
+            <div class="demo-box">
+                <form id="demo-form">
+                    <input type="text" class="focus-demo" placeholder="輸入名字..." required>
+                    <button type="submit" class="btn-success">提交表單</button>
+                </form>
+                <div class="demo-output" id="submit-output">表單未提交</div>
+            </div>
+
+            <div class="code-block">
+// Focus 事件
+input.addEventListener('focus', (event) => {
+    console.log('輸入框獲得焦點');
+});
+
+// Change 事件
+select.addEventListener('change', (event) => {
+    console.log('選擇值:', event.target.value);
+});
+
+// Input 事件 (實時)
+input.addEventListener('input', (event) => {
+    console.log('當前輸入:', event.target.value);
+});
+
+// Submit 事件
+form.addEventListener('submit', (event) => {
+    event.preventDefault(); // 阻止預設提交
+    console.log('表單已提交');
+});
+            </div>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>事件名稱</th>
+                        <th>說明</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>focus</td>
+                        <td>元素獲得焦點</td>
+                    </tr>
+                    <tr>
+                        <td>blur</td>
+                        <td>元素失去焦點</td>
+                    </tr>
+                    <tr>
+                        <td>change</td>
+                        <td>輸入框值改變且失焦</td>
+                    </tr>
+                    <tr>
+                        <td>input</td>
+                        <td>輸入框值改變 (實時)</td>
+                    </tr>
+                    <tr>
+                        <td>submit</td>
+                        <td>表單提交</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- ==================== 事件對象和方法 ==================== -->
+        <section>
+            <h2>🔍 事件對象 (Event Object)</h2>
+
+            <h3>事件對象常用屬性和方法</h3>
+            <div class="demo-box">
+                <button id="event-object-btn" class="btn-info">點擊查看事件對象詳情</button>
+                <div class="event-log" id="event-object-log"></div>
+                <button class="clear-log-btn" onclick="clearLog('event-object-log')">清除日誌</button>
+            </div>
+
+            <div class="code-block">
+element.addEventListener('click', (event) => {
+    // 屬性
+    console.log('事件類型:', event.type); // 'click'
+    console.log('目標元素:', event.target); // 點擊的元素
+    console.log('座標 X:', event.clientX); // 相對視窗的 X 座標
+    console.log('座標 Y:', event.clientY); // 相對視窗的 Y 座標
+    
+    // 方法
+    event.preventDefault(); // 阻止預設行為
+    event.stopPropagation(); // 停止冒泡
+    
+    // 修飾鍵
+    console.log('Shift:', event.shiftKey);
+    console.log('Ctrl:', event.ctrlKey);
+    console.log('Alt:', event.altKey);
+});
+            </div>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>屬性/方法</th>
+                        <th>說明</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>event.type</td>
+                        <td>事件類型 (如 'click')</td>
+                    </tr>
+                    <tr>
+                        <td>event.target</td>
+                        <td>觸發事件的元素</td>
+                    </tr>
+                    <tr>
+                        <td>event.currentTarget</td>
+                        <td>監聽事件的元素</td>
+                    </tr>
+                    <tr>
+                        <td>event.clientX / clientY</td>
+                        <td>相對視窗的座標</td>
+                    </tr>
+                    <tr>
+                        <td>event.pageX / pageY</td>
+                        <td>相對頁面的座標</td>
+                    </tr>
+                    <tr>
+                        <td>event.preventDefault()</td>
+                        <td>阻止預設行為</td>
+                    </tr>
+                    <tr>
+                        <td>event.stopPropagation()</td>
+                        <td>停止事件冒泡</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- ==================== 事件冒泡和捕獲 ==================== -->
+        <section>
+            <h2>🫧 事件冒泡 (Event Bubbling) 和捕獲 (Capturing)</h2>
+
+            <h3>事件冒泡演示</h3>
+            <div class="demo-box">
+                <div id="outer-div" style="background: #ff6b6b; padding: 20px; border-radius: 8px; color: white; font-weight: bold;">
+                    外層 DIV
+                    <div id="middle-div" style="background: #667eea; padding: 20px; border-radius: 8px; color: white; font-weight: bold; margin-top: 10px;">
+                        中層 DIV
+                        <button id="inner-btn" class="btn-success">內層按鈕</button>
+                    </div>
+                </div>
+                <div class="event-log" id="bubble-log"></div>
+                <button class="clear-log-btn" onclick="clearLog('bubble-log')">清除日誌</button>
+            </div>
+
+            <h3>停止冒泡演示</h3>
+            <div class="demo-box">
+                <div id="outer-div2" style="background: #4ecdc4; padding: 20px; border-radius: 8px; color: white; font-weight: bold;">
+                    外層 DIV (帶冒泡阻止)
+                    <div id="middle-div2" style="background: #45b7d1; padding: 20px; border-radius: 8px; color: white; font-weight: bold; margin-top: 10px;">
+                        中層 DIV
+                        <button id="inner-btn2" class="btn-success">內層按鈕 (stopPropagation)</button>
+                    </div>
+                </div>
+                <div class="event-log" id="stop-bubble-log"></div>
+                <button class="clear-log-btn" onclick="clearLog('stop-bubble-log')">清除日誌</button>
+            </div>
+
+            <div class="code-block">
+// 冒泡 (預設)
+element.addEventListener('click', (event) => {
+    console.log('事件冒泡');
+});
+
+// 停止冒泡
+element.addEventListener('click', (event) => {
+    event.stopPropagation(); // 阻止冒泡到父元素
+});
+
+// 捕獲階段
+element.addEventListener('click', (event) => {
+    console.log('捕獲階段');
+}, true); // 第三個參數 true 表示捕獲
+            </div>
+
+            <div class="description">
+                <strong>事件流程：</strong><br>
+                1. <strong>捕獲階段</strong> - 事件從 document 向下傳播到目標元素<br>
+                2. <strong>目標階段</strong> - 事件到達目標元素<br>
+                3. <strong>冒泡階段</strong> - 事件從目標元素向上傳播到 document<br><br>
+                <strong>预设是冒泡階段，使用 addEventListener 的第三個參數可以改為捕獲</strong>
+            </div>
+        </section>
+
+        <!-- ==================== 事件委托 ==================== -->
+        <section>
+            <h2>✋ 事件委托 (Event Delegation)</h2>
+
+            <h3>動態列表事件委托</h3>
+            <div class="demo-box">
+                <div style="margin-bottom: 15px;">
+                    <input type="text" class="focus-demo" id="item-input" placeholder="輸入項目名稱...">
+                    <button onclick="addItemToDelegation()" class="btn-success">添加項目</button>
+                </div>
+                <ul id="delegation-list" style="list-style: none; padding: 0;">
+                    <li style="padding: 10px; background: #f0f0f0; margin: 5px 0; border-radius: 5px; display: flex; justify-content: space-between; align-items: center;">
+                        項目 1
+                        <button class="remove-btn" style="padding: 5px 10px; font-size: 12px;">刪除</button>
+                    </li>
+                </ul>
+                <div class="event-log" id="delegation-log"></div>
+                <button class="clear-log-btn" onclick="clearLog('delegation-log')">清除日誌</button>
+            </div>
+
+            <div class="code-block">
+// 使用事件委托而不是為每個項目綁定事件
+const list = document.getElementById('delegation-list');
+list.addEventListener('click', (event) => {
+    if (event.target.classList.contains('remove-btn')) {
+        event.target.parentElement.remove();
+        console.log('項目已刪除');
+    }
+});
+
+// 優點:
+// 1. 減少事件監聽器數量
+// 2. 動態元素自動支持事件
+// 3. 性能更好
+            </div>
+
+            <div class="description">
+                <strong>事件委托的優點：</strong><br>
+                • 可以為動態添加的元素綁定事件<br>
+                • 減少事件監聽器數量，提升性能<br>
+                • 代碼更簡潔<br><br>
+                <strong>原理：</strong> 利用事件冒泡，在父元素上監聽事件，通過 event.target 判斷觸發的是哪個子元素
+            </div>
+        </section>
+
+        <!-- ==================== 移除事件監聽 ==================== -->
+        <section>
+            <h2>🗑️ 移除事件監聽</h2>
+
+            <h3>removeEventListener 方式</h3>
+            <div class="demo-box">
+                <button id="add-listener-btn" class="btn-success">添加監聽器</button>
+                <button id="remove-listener-btn" class="btn-danger">移除監聽器</button>
+                <div class="demo-output" id="remove-listener-output">未添加監聽器</div>
+            </div>
+
+            <div class="code-block">
+// 定義監聽函數
+function handleClick() {
+    console.log('被點擊了');
+}
+
+const btn = document.getElementById('my-btn');
+
+// 添加監聽
+btn.addEventListener('click', handleClick);
+
+// 移除監聽 (必須使用相同的函數引用)
+btn.removeEventListener('click', handleClick);
+            </div>
+
+            <div class="description">
+                <strong>移除事件監聽的注意事項：</strong><br>
+                • 必須保存監聽函數的引用<br>
+                • removeEventListener 的參數必須與 addEventListener 完全相同<br>
+                • 匿名函數無法移除，建議使用具名函數<br><br>
+                ❌ 錯誤:
+                <div style="background: #ffe8e8; padding: 10px; border-radius: 5px; margin-top: 10px;">
+                    btn.addEventListener('click', () => { });<br>
+                    btn.removeEventListener('click', () => { }); // 無效！
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== 常見應用 ==================== -->
+        <section>
+            <h2>💡 常見應用場景</h2>
+
+            <h3>防止表單重複提交</h3>
+            <div class="demo-box">
+                <form id="prevent-submit-form">
+                    <input type="text" class="focus-demo" placeholder="輸入內容..." required>
+                    <button type="submit" class="btn-success">提交</button>
+                </form>
+                <div class="demo-output" id="prevent-output">表單未提交</div>
+            </div>
+
+            <h3>按鍵快捷鍵 (Ctrl+S 保存)</h3>
+            <div class="demo-box">
+                <div style="background: #e8f5e9; padding: 15px; border-radius: 5px; margin-bottom: 10px;">
+                    試試按 <strong>Ctrl+S</strong> (Windows) 或 <strong>Cmd+S</strong> (Mac) 保存
+                </div>
+                <div class="demo-output" id="shortcut-output">未按下快捷鍵</div>
+            </div>
+
+            <h3>自動保存輸入 (防止丟失)</h3>
+            <div class="demo-box">
+                <textarea class="focus-demo" id="auto-save-textarea" placeholder="輸入內容會自動保存到本地儲存..." style="height: 100px; font-family: 'Courier New', monospace;"></textarea>
+                <div class="demo-output" id="auto-save-output">本地儲存已載入</div>
+            </div>
+
+            <div class="code-block">
+// 防止重複提交
+form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    
+    // 禁用提交按鈕
+    const btn = event.target.querySelector('button');
+    btn.disabled = true;
+    btn.textContent = '提交中...';
+    
+    // 模擬提交延遲
+    setTimeout(() => {
+        btn.disabled = false;
+        btn.textContent = '提交';
+    }, 2000);
+});
+
+// 快捷鍵
+document.addEventListener('keydown', (event) => {
+    if ((event.ctrlKey || event.metaKey) && event.key === 's') {
+        event.preventDefault();
+        console.log('保存');
+    }
+});
+
+// 自動保存
+textarea.addEventListener('input', (event) => {
+    localStorage.setItem('content', event.target.value);
+});
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>JavaScript 事件監聽學習教程 | 2026</p>
+        <p>掌握事件監聽是 JavaScript 互動的基礎 ✨</p>
+    </footer>
+
+    <script>
+        // ==================== 基礎事件監聽 ====================
+        function handleInlineClick() {
+            document.getElementById('inline-output').textContent = 
+                '✅ 內聯事件已觸發 (' + new Date().toLocaleTimeString() + ')';
+        }
+
+        // 事件屬性方式
+        const eventPropBtn = document.getElementById('event-prop-btn');
+        eventPropBtn.onclick = function() {
+            document.getElementById('event-prop-output').textContent = 
+                '✅ 屬性事件已觸發 (' + new Date().toLocaleTimeString() + ')';
+        };
+
+        // addEventListener 方式
+        const addEventBtn = document.getElementById('add-event-btn');
+        addEventBtn.addEventListener('click', function(event) {
+            document.getElementById('add-event-output').textContent = 
+                '✅ addEventListener 已觸發 (' + new Date().toLocaleTimeString() + ')';
+        });
+
+        // ==================== 滑鼠事件 ====================
+        const clickElement = document.getElementById('click-element');
+        const dblclickElement = document.getElementById('dblclick-element');
+        const output = document.getElementById('click-dblclick-output');
+
+        clickElement.addEventListener('click', () => {
+            output.textContent = '✅ 單擊事件觸發 (' + new Date().toLocaleTimeString() + ')';
+        });
+
+        dblclickElement.addEventListener('dblclick', () => {
+            output.textContent = '✅ 雙擊事件觸發 (' + new Date().toLocaleTimeString() + ')';
+        });
+
+        // Mouseenter/Leave
+        const mouseenterElement = document.getElementById('mouseenter-element');
+        const mouseenterOutput = document.getElementById('mouseenter-output');
+
+        mouseenterElement.addEventListener('mouseenter', () => {
+            mouseenterOutput.textContent = '✅ 滑鼠進入 (' + new Date().toLocaleTimeString() + ')';
+            mouseenterElement.style.background = 'linear-gradient(135deg, #ff6b6b 0%, #ff8e72 100%)';
+        });
+
+        mouseenterElement.addEventListener('mouseleave', () => {
+            mouseenterOutput.textContent = '✅ 滑鼠離開 (' + new Date().toLocaleTimeString() + ')';
+            mouseenterElement.style.background = 'linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%)';
+        });
+
+        // MouseMove
+        const mousemoveElement = document.getElementById('mousemove-element');
+        const mousemoveOutput = document.getElementById('mousemove-output');
+
+        mousemoveElement.addEventListener('mousemove', (event) => {
+            const rect = mousemoveElement.getBoundingClientRect();
+            const x = Math.round(event.clientX - rect.left);
+            const y = Math.round(event.clientY - rect.top);
+            mousemoveOutput.textContent = '座標: X = ' + x + ', Y = ' + y;
+        });
+
+        // ==================== 鍵盤事件 ====================
+        const keyInput = document.getElementById('key-input');
+        const keyLog = document.getElementById('key-log');
+        let keyEventCount = 0;
+
+        keyInput.addEventListener('keydown', (event) => {
+            addLog('key-log', `[${++keyEventCount}] Keydown: ${event.key} (${event.keyCode})`);
+        });
+
+        keyInput.addEventListener('keyup', (event) => {
+            addLog('key-log', `[${++keyEventCount}] Keyup: ${event.key}`);
+        });
+
+        // 按鍵詳情
+        const keyInfoInput = document.getElementById('key-info-input');
+        keyInfoInput.addEventListener('keydown', (event) => {
+            document.getElementById('key-name').textContent = event.key;
+            document.getElementById('key-code').textContent = event.keyCode;
+            document.getElementById('shift-key').textContent = event.shiftKey ? '是' : '否';
+            document.getElementById('ctrl-key').textContent = event.ctrlKey ? '是' : '否';
+        });
+
+        // ==================== 表單事件 ====================
+        const focusInput = document.getElementById('focus-input');
+        focusInput.addEventListener('focus', () => {
+            document.getElementById('focus-output').textContent = '✅ 輸入框已聚焦';
+        });
+
+        focusInput.addEventListener('blur', () => {
+            document.getElementById('focus-output').textContent = '❌ 輸入框已失焦';
+        });
+
+        const changeSelect = document.getElementById('change-select');
+        changeSelect.addEventListener('change', (event) => {
+            document.getElementById('change-output').textContent = 
+                '✅ 選擇值: ' + (event.target.value || '未選擇');
+        });
+
+        const inputRealtime = document.getElementById('input-realtime');
+        inputRealtime.addEventListener('input', (event) => {
+            const length = event.target.value.length;
+            document.getElementById('input-realtime-output').textContent = 
+                '字數: ' + length;
+        });
+
+        const demoForm = document.getElementById('demo-form');
+        demoForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            document.getElementById('submit-output').textContent = 
+                '✅ 表單已提交 (' + new Date().toLocaleTimeString() + ')';
+        });
+
+        // ==================== 事件對象 ====================
+        const eventObjectBtn = document.getElementById('event-object-btn');
+        eventObjectBtn.addEventListener('click', (event) => {
+            const log = document.getElementById('event-object-log');
+            log.innerHTML = '';
+            
+            addLog('event-object-log', `事件類型: ${event.type}`);
+            addLog('event-object-log', `目標元素: ${event.target.tagName}`);
+            addLog('event-object-log', `座標 X: ${event.clientX}`);
+            addLog('event-object-log', `座標 Y: ${event.clientY}`);
+            addLog('event-object-log', `頁面座標 X: ${event.pageX}`);
+            addLog('event-object-log', `頁面座標 Y: ${event.pageY}`);
+            addLog('event-object-log', `Shift 鍵: ${event.shiftKey}`);
+            addLog('event-object-log', `Ctrl 鍵: ${event.ctrlKey}`);
+        });
+
+        // ==================== 事件冒泡 ====================
+        const outerDiv = document.getElementById('outer-div');
+        const middleDiv = document.getElementById('middle-div');
+        const innerBtn = document.getElementById('inner-btn');
+        const bubbleLog = document.getElementById('bubble-log');
+
+        outerDiv.addEventListener('click', () => {
+            addLog('bubble-log', '外層 DIV 點擊事件');
+        });
+
+        middleDiv.addEventListener('click', () => {
+            addLog('bubble-log', '中層 DIV 點擊事件');
+        });
+
+        innerBtn.addEventListener('click', () => {
+            addLog('bubble-log', '內層按鈕點擊事件');
+        });
+
+        // 停止冒泡
+        const outerDiv2 = document.getElementById('outer-div2');
+        const middleDiv2 = document.getElementById('middle-div2');
+        const innerBtn2 = document.getElementById('inner-btn2');
+
+        outerDiv2.addEventListener('click', () => {
+            addLog('stop-bubble-log', '外層 DIV 點擊事件');
+        });
+
+        middleDiv2.addEventListener('click', () => {
+            addLog('stop-bubble-log', '中層 DIV 點擊事件');
+        });
+
+        innerBtn2.addEventListener('click', (event) => {
+            event.stopPropagation();
+            addLog('stop-bubble-log', '內層按鈕 (已停止冒泡)');
+        });
+
+        // ==================== 事件委托 ====================
+        let delegationCount = 1;
+        const delegationList = document.getElementById('delegation-list');
+
+        delegationList.addEventListener('click', (event) => {
+            if (event.target.classList.contains('remove-btn')) {
+                const itemText = event.target.parentElement.textContent.split('\n')[0];
+                event.target.parentElement.remove();
+                addLog('delegation-log', `已刪除: ${itemText}`);
+            }
+        });
+
+        function addItemToDelegation() {
+            const input = document.getElementById('item-input');
+            const text = input.value.trim();
+
+            if (text) {
+                const li = document.createElement('li');
+                li.style.cssText = 'padding: 10px; background: #f0f0f0; margin: 5px 0; border-radius: 5px; display: flex; justify-content: space-between; align-items: center;';
+                li.innerHTML = text + ' <button class="remove-btn" style="padding: 5px 10px; font-size: 12px;">刪除</button>';
+                delegationList.appendChild(li);
+                input.value = '';
+                addLog('delegation-log', `已添加: ${text}`);
+            }
+        }
+
+        // ==================== 移除事件監聽 ====================
+        const addListenerBtn = document.getElementById('add-listener-btn');
+        const removeListenerBtn = document.getElementById('remove-listener-btn');
+        const removeListenerOutput = document.getElementById('remove-listener-output');
+
+        let isListenerAdded = false;
+
+        function testClickHandler() {
+            removeListenerOutput.textContent = '✅ 監聽器已執行 (' + new Date().toLocaleTimeString() + ')';
+        }
+
+        addListenerBtn.addEventListener('click', () => {
+            if (!isListenerAdded) {
+                removeListenerBtn.addEventListener('click', testClickHandler);
+                removeListenerOutput.textContent = '✅ 監聽器已添加';
+                isListenerAdded = true;
+            }
+        });
+
+        removeListenerBtn.addEventListener('click', () => {
+            if (isListenerAdded) {
+                removeListenerBtn.removeEventListener('click', testClickHandler);
+                removeListenerOutput.textContent = '❌ 監聽器已移除';
+                isListenerAdded = false;
+            }
+        });
+
+        // ==================== 常見應用 ====================
+        // 防止表單重複提交
+        const preventForm = document.getElementById('prevent-submit-form');
+        preventForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const btn = event.target.querySelector('button');
+            btn.disabled = true;
+            btn.textContent = '提交中...';
+            
+            document.getElementById('prevent-output').textContent = 
+                '✅ 表單已提交 (按鈕已禁用 3 秒)';
+
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.textContent = '提交';
+            }, 3000);
+        });
+
+        // 快捷鍵
+        document.addEventListener('keydown', (event) => {
+            if ((event.ctrlKey || event.metaKey) && event.key === 's') {
+                event.preventDefault();
+                document.getElementById('shortcut-output').textContent = 
+                    '✅ Ctrl+S 已按下 (' + new Date().toLocaleTimeString() + ')';
+            }
+        });
+
+        // 自動保存
+        const autoSaveTextarea = document.getElementById('auto-save-textarea');
+        const autoSaveOutput = document.getElementById('auto-save-output');
+
+        // 載入本地儲存
+        const savedContent = localStorage.getItem('auto-save-content');
+        if (savedContent) {
+            autoSaveTextarea.value = savedContent;
+            autoSaveOutput.textContent = '✅ 已從本地儲存中恢復內容';
+        }
+
+        autoSaveTextarea.addEventListener('input', (event) => {
+            localStorage.setItem('auto-save-content', event.target.value);
+            autoSaveOutput.textContent = '✅ 已自動保存 (' + new Date().toLocaleTimeString() + ')';
+        });
+
+        // ==================== 工具函數 ====================
+        function addLog(elementId, message) {
+            const log = document.getElementById(elementId);
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `<span class="log-time">[${new Date().toLocaleTimeString()}]</span> ${message}`;
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+
+            // 限制日誌條數
+            if (log.children.length > 20) {
+                log.removeChild(log.firstChild);
+            }
+        }
+
+        function clearLog(elementId) {
+            document.getElementById(elementId).innerHTML = '';
+        }
+    </script>
+</body>
+</html>

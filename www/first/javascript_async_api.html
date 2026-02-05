@@ -1,0 +1,1898 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript 非同步處理與 API 示範</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', '微軟正黑體', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 36px;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 16px;
+        }
+
+        section {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        section h2 {
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 24px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #555;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        /* ==================== 按鈕樣式 ==================== */
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        /* ==================== 演示容器 ==================== */
+        .demo-box {
+            background: #f0f0f0;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .demo-output {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 10px;
+            min-height: 50px;
+            color: #333;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            line-height: 1.6;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            margin: 15px 0;
+            border-left: 4px solid #667eea;
+            line-height: 1.5;
+        }
+
+        .description {
+            background: rgba(102, 126, 234, 0.1);
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            color: #333;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 15px 0;
+        }
+
+        .comparison-box {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .comparison-box h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .comparison-box .code-block {
+            margin: 10px 0;
+            font-size: 12px;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #333;
+            font-size: 14px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .feature-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #11998e;
+            font-weight: bold;
+        }
+
+        .method-card {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+
+        .method-card h4 {
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+
+        .method-tag {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            margin-right: 5px;
+            margin-bottom: 8px;
+        }
+
+        .method-tag.async {
+            background: #4facfe;
+        }
+
+        .method-tag.promise {
+            background: #f5576c;
+        }
+
+        .demo-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #667eea;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .response-card {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+
+        .response-card h5 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .response-data {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        /* ==================== 響應式 ==================== */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 28px;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            section {
+                padding: 20px;
+            }
+        }
+
+        footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            padding: 30px 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⏳ JavaScript 非同步處理與 API 詳細示範</h1>
+        <p class="subtitle">掌握 Promise、Async/Await 和 API 呼叫</p>
+
+        <!-- ==================== 非同步基礎 ==================== -->
+        <section>
+            <h2>🔄 非同步基礎概念</h2>
+
+            <h3>同步 vs 非同步</h3>
+            <div class="demo-box">
+                <button onclick="demoSynchronous()">執行同步示範</button>
+                <button onclick="demoAsynchronous()">執行非同步示範</button>
+                <div class="demo-output" id="sync-async-output"></div>
+            </div>
+
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>❌ 同步 (Synchronous)</h4>
+                    <div class="code-block">
+// 代碼依次執行
+console.log('開始');
+
+// 耗時操作 (阻塞)
+for (let i = 0; i < 1000000000; i++) {}
+
+console.log('結束');
+// 結果: 阻塞整個程序
+                    </div>
+                </div>
+                <div class="comparison-box">
+                    <h4>✅ 非同步 (Asynchronous)</h4>
+                    <div class="code-block">
+// 耗時操作不阻塞
+console.log('開始');
+
+setTimeout(() => {
+    console.log('結束');
+}, 1000);
+
+// 其他代碼繼續執行
+                    </div>
+                </div>
+            </div>
+
+            <div class="description">
+                <strong>為什麼需要非同步？</strong><br>
+                • 避免阻塞 UI<br>
+                • 提高程序響應性<br>
+                • 提升用戶體驗<br>
+                • 正確處理 I/O 操作
+            </div>
+        </section>
+
+        <!-- ==================== 回調函數 ==================== -->
+        <section>
+            <h2>📞 回調函數 (Callback)</h2>
+
+            <div class="method-card">
+                <h4>基本回調概念</h4>
+                <button onclick="demoCallback()">執行示範</button>
+                <div class="demo-output" id="callback-output"></div>
+                <div class="code-block">
+// 基本回調
+function fetchData(callback) {
+    setTimeout(() => {
+        const data = { id: 1, name: 'Alice' };
+        callback(data);
+    }, 1000);
+}
+
+fetchData((data) => {
+    console.log('獲得數據:', data);
+});
+
+// 帶錯誤處理的回調
+function fetchDataWithError(success, error) {
+    setTimeout(() => {
+        if (Math.random() > 0.5) {
+            success({ id: 1, name: 'Alice' });
+        } else {
+            error('請求失敗');
+        }
+    }, 1000);
+}
+
+fetchDataWithError(
+    (data) => console.log('成功:', data),
+    (err) => console.error('失敗:', err)
+);
+                </div>
+            </div>
+
+            <div class="description">
+                <strong>回調地獄 (Callback Hell)：</strong><br>
+                當回調嵌套太深時，代碼變得難以閱讀和維護。這就是為什麼 Promise 和 Async/Await 被引入。
+            </div>
+
+            <div class="code-block">
+// ❌ 回調地獄
+fetchUser((user) => {
+    fetchPosts(user.id, (posts) => {
+        fetchComments(posts[0].id, (comments) => {
+            fetchReplies(comments[0].id, (replies) => {
+                console.log(replies);
+            });
+        });
+    });
+});
+            </div>
+        </section>
+
+        <!-- ==================== Promise ==================== -->
+        <section>
+            <h2>🤝 Promise</h2>
+
+            <div class="method-card">
+                <h4>Promise 的三個狀態</h4>
+                <button onclick="demoPromiseStates()">執行示範</button>
+                <div class="demo-output" id="promise-states-output"></div>
+                <div class="code-block">
+// Pending (待機) → Fulfilled (成功) 或 Rejected (失敗)
+
+const promise = new Promise((resolve, reject) => {
+    // 非同步操作
+    setTimeout(() => {
+        if (Math.random() > 0.5) {
+            resolve('成功!'); // 轉為 Fulfilled
+        } else {
+            reject('失敗!'); // 轉為 Rejected
+        }
+    }, 1000);
+});
+
+// 狀態確定後不會改變 (Immutable)
+promise
+    .then(result => console.log('結果:', result))
+    .catch(error => console.error('錯誤:', error));
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>Promise 鏈式調用</h4>
+                <button onclick="demoPromiseChain()">執行示範</button>
+                <div class="demo-output" id="promise-chain-output"></div>
+                <div class="code-block">
+// ✅ Promise 鏈式 (避免回調地獄)
+fetchUser(1)
+    .then(user => {
+        console.log('獲得用戶:', user);
+        return fetchPosts(user.id);
+    })
+    .then(posts => {
+        console.log('獲得文章:', posts);
+        return posts[0];
+    })
+    .catch(error => {
+        console.error('發生錯誤:', error);
+    })
+    .finally(() => {
+        console.log('操作完成');
+    });
+
+// 關鍵點：每個 then 返回新的 Promise
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>Promise.all() - 等待所有 Promise</h4>
+                <button onclick="demoPromiseAll()">執行示範</button>
+                <div class="demo-output" id="promise-all-output"></div>
+                <div class="code-block">
+// 同時發起多個請求
+Promise.all([
+    fetch('/api/users'),
+    fetch('/api/posts'),
+    fetch('/api/comments')
+])
+.then(responses => {
+    console.log('全部完成');
+    return Promise.all(responses.map(r => r.json()));
+})
+.then(data => {
+    console.log('用戶:', data[0]);
+    console.log('文章:', data[1]);
+    console.log('評論:', data[2]);
+})
+.catch(error => {
+    // 任何一個失敗就會進入 catch
+    console.error('某個請求失敗:', error);
+});
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>Promise.race() - 等待第一個 Promise</h4>
+                <button onclick="demoPromiseRace()">執行示範</button>
+                <div class="demo-output" id="promise-race-output"></div>
+                <div class="code-block">
+// 競速：返回第一個完成的
+const timeoutPromise = new Promise((resolve, reject) =>
+    setTimeout(() => reject('超時'), 5000)
+);
+
+Promise.race([
+    fetch('/api/data'),
+    timeoutPromise
+])
+.then(response => console.log('請求成功'))
+.catch(error => console.error('請求超時或失敗:', error));
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>Promise.allSettled() - 等待所有完成</h4>
+                <button onclick="demoPromiseAllSettled()">執行示範</button>
+                <div class="demo-output" id="promise-allsettled-output"></div>
+                <div class="code-block">
+// 不管成功或失敗，都會等待
+Promise.allSettled([
+    fetch('/api/users'),
+    fetch('/api/invalid'),
+    fetch('/api/posts')
+])
+.then(results => {
+    results.forEach((result, index) => {
+        if (result.status === 'fulfilled') {
+            console.log(`請求 ${index} 成功:`, result.value);
+        } else {
+            console.log(`請求 ${index} 失敗:`, result.reason);
+        }
+    });
+});
+
+// 結果: [
+//     { status: 'fulfilled', value: ... },
+//     { status: 'rejected', reason: ... },
+//     { status: 'fulfilled', value: ... }
+// ]
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>Promise.any() - 等待第一個成功</h4>
+                <span class="method-tag promise">ES2021</span>
+                <button onclick="demoPromiseAny()">執行示範</button>
+                <div class="demo-output" id="promise-any-output"></div>
+                <div class="code-block">
+// 第一個成功就返回，全部失敗才 reject
+Promise.any([
+    fetch('/api/mirror1'),
+    fetch('/api/mirror2'),
+    fetch('/api/mirror3')
+])
+.then(response => {
+    console.log('至少有一個鏡像可用');
+})
+.catch(error => {
+    // AggregateError: 所有 Promise 都失敗
+    console.error('所有鏡像都不可用');
+});
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== Async/Await ==================== -->
+        <section>
+            <h2>⏸️ Async/Await (推薦)</h2>
+
+            <div class="method-card">
+                <h4>基本 Async/Await 語法</h4>
+                <button onclick="demoAsyncAwaitBasic()">執行示範</button>
+                <div class="demo-output" id="async-await-basic-output"></div>
+                <div class="code-block">
+// ✅ 現代方式：代碼看起來像同步
+async function getUserData(userId) {
+    try {
+        // 等待 Promise 解決
+        const user = await fetchUser(userId);
+        console.log('獲得用戶:', user);
+        
+        const posts = await fetchPosts(user.id);
+        console.log('獲得文章:', posts);
+        
+        return { user, posts };
+    } catch (error) {
+        console.error('錯誤:', error);
+    } finally {
+        console.log('數據加載完成');
+    }
+}
+
+// 調用 async 函數
+await getUserData(1);
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>並行執行 (Parallel Execution)</h4>
+                <button onclick="demoParallelExecution()">執行示範</button>
+                <div class="demo-output" id="parallel-output"></div>
+                <div class="code-block">
+// ❌ 錯誤：順序執行 (浪費時間)
+async function slowWay() {
+    const user = await fetchUser(1); // 1秒
+    const posts = await fetchPosts(1); // 1秒
+    const comments = await fetchComments(1); // 1秒
+    // 總耗時: 3秒
+}
+
+// ✅ 正確：並行執行
+async function fastWay() {
+    // 同時啟動所有請求
+    const [user, posts, comments] = await Promise.all([
+        fetchUser(1),
+        fetchPosts(1),
+        fetchComments(1)
+    ]);
+    // 總耗時: 1秒 (最長的那個)
+}
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>錯誤處理</h4>
+                <button onclick="demoErrorHandling()">執行示範</button>
+                <div class="demo-output" id="error-handling-output"></div>
+                <div class="code-block">
+async function robustFetch() {
+    try {
+        const response = await fetch('/api/data');
+        
+        // 檢查 HTTP 狀態
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        return data;
+        
+    } catch (error) {
+        // 捕獲網絡錯誤和 JSON 解析錯誤
+        if (error instanceof TypeError) {
+            console.error('網絡錯誤:', error.message);
+        } else if (error instanceof SyntaxError) {
+            console.error('JSON 解析失敗:', error.message);
+        } else {
+            console.error('其他錯誤:', error.message);
+        }
+        throw error; // 重新拋出
+        
+    } finally {
+        console.log('請求完成');
+    }
+}
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>重試機制 (Retry Logic)</h4>
+                <button onclick="demoRetryLogic()">執行示範</button>
+                <div class="demo-output" id="retry-output"></div>
+                <div class="code-block">
+async function fetchWithRetry(url, maxRetries = 3) {
+    for (let i = 0; i < maxRetries; i++) {
+        try {
+            const response = await fetch(url);
+            if (response.ok) return response;
+        } catch (error) {
+            if (i === maxRetries - 1) throw error;
+            // 延遲後重試
+            await new Promise(r => setTimeout(r, 1000 * (i + 1)));
+        }
+    }
+}
+
+// 使用
+try {
+    const response = await fetchWithRetry('/api/data', 3);
+    const data = await response.json();
+} catch (error) {
+    console.error('最終失敗:', error);
+}
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== Fetch API ==================== -->
+        <section>
+            <h2>🌐 Fetch API</h2>
+
+            <div class="method-card">
+                <h4>基本 GET 請求</h4>
+                <button onclick="demoFetchGET()">執行 GET 請求</button>
+                <div class="demo-output" id="fetch-get-output"></div>
+                <div class="code-block">
+// 最簡單的 GET 請求
+async function fetchData() {
+    try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/users/1');
+        
+        // response 是一個 Response 物件
+        console.log('狀態碼:', response.status);
+        console.log('OK:', response.ok);
+        console.log('Headers:', response.headers);
+        
+        const data = await response.json();
+        console.log('數據:', data);
+        
+    } catch (error) {
+        console.error('請求失敗:', error);
+    }
+}
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>POST 請求 (發送數據)</h4>
+                <button onclick="demoFetchPOST()">執行 POST 請求</button>
+                <div class="demo-output" id="fetch-post-output"></div>
+                <div class="code-block">
+async function createUser() {
+    const newUser = {
+        name: 'Alice',
+        email: 'alice@example.com',
+        phone: '123-456-7890'
+    };
+    
+    try {
+        const response = await fetch(
+            'https://jsonplaceholder.typicode.com/users',
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newUser)
+            }
+        );
+        
+        const result = await response.json();
+        console.log('創建成功:', result);
+        
+    } catch (error) {
+        console.error('請求失敗:', error);
+    }
+}
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>PUT/PATCH 請求 (更新數據)</h4>
+                <button onclick="demoFetchPUT()">執行 PUT 請求</button>
+                <div class="demo-output" id="fetch-put-output"></div>
+                <div class="code-block">
+// PUT: 替換整個資源
+async function updateUser(userId) {
+    const updatedUser = {
+        name: 'Bob',
+        email: 'bob@example.com'
+    };
+    
+    const response = await fetch(
+        `https://jsonplaceholder.typicode.com/users/${userId}`,
+        {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedUser)
+        }
+    );
+    
+    return await response.json();
+}
+
+// PATCH: 部分更新
+async function partialUpdate(userId) {
+    const response = await fetch(
+        `https://jsonplaceholder.typicode.com/users/${userId}`,
+        {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: 'Charlie' })
+        }
+    );
+    
+    return await response.json();
+}
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>DELETE 請求 (刪除數據)</h4>
+                <button onclick="demoFetchDELETE()">執行 DELETE 請求</button>
+                <div class="demo-output" id="fetch-delete-output"></div>
+                <div class="code-block">
+async function deleteUser(userId) {
+    try {
+        const response = await fetch(
+            `https://jsonplaceholder.typicode.com/users/${userId}`,
+            {
+                method: 'DELETE'
+            }
+        );
+        
+        if (response.ok) {
+            console.log('刪除成功');
+        } else {
+            console.error('刪除失敗', response.status);
+        }
+        
+    } catch (error) {
+        console.error('請求失敗:', error);
+    }
+}
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>Fetch 選項對象</h4>
+                <div class="code-block">
+const options = {
+    method: 'GET', // GET, POST, PUT, PATCH, DELETE
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer token',
+        'Custom-Header': 'value'
+    },
+    body: JSON.stringify(data), // POST/PUT/PATCH 時使用
+    
+    // 高級選項
+    credentials: 'include', // 包含 Cookie
+    mode: 'cors', // CORS 模式
+    cache: 'no-cache', // 緩存策略
+    redirect: 'follow', // 跟隨重定向
+    signal: abortController.signal // 取消請求
+};
+
+const response = await fetch(url, options);
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== 進階應用 ==================== -->
+        <section>
+            <h2>🌟 進階應用</h2>
+
+            <h3>取消請求 (Abort)</h3>
+            <div class="demo-box">
+                <button onclick="demoAbortRequest()" class="btn-success">開始請求</button>
+                <button onclick="cancelAbortRequest()" class="btn-danger">取消請求</button>
+                <div class="demo-output" id="abort-output"></div>
+            </div>
+
+            <div class="code-block">
+// 建立 AbortController
+const controller = new AbortController();
+
+async function fetchWithCancel() {
+    try {
+        const response = await fetch('/api/long-operation', {
+            signal: controller.signal
+        });
+        const data = await response.json();
+    } catch (error) {
+        if (error.name === 'AbortError') {
+            console.log('請求已取消');
+        }
+    }
+}
+
+// 取消請求
+controller.abort();
+            </div>
+
+            <h3>超時控制</h3>
+            <div class="demo-box">
+                <button onclick="demoTimeout()">執行超時請求</button>
+                <div class="demo-output" id="timeout-output"></div>
+            </div>
+
+            <div class="code-block">
+async function fetchWithTimeout(url, timeout = 5000) {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeout);
+    
+    try {
+        const response = await fetch(url, {
+            signal: controller.signal
+        });
+        return await response.json();
+    } catch (error) {
+        if (error.name === 'AbortError') {
+            throw new Error('請求超時');
+        }
+        throw error;
+    } finally {
+        clearTimeout(id);
+    }
+}
+
+// 使用
+await fetchWithTimeout('/api/data', 5000);
+            </div>
+
+            <h3>批量請求管理</h3>
+            <div class="demo-box">
+                <button onclick="demoBatchRequests()">執行批量請求</button>
+                <div class="demo-output" id="batch-output"></div>
+            </div>
+
+            <div class="code-block">
+// 同時請求多個用戶
+async function fetchMultipleUsers(userIds) {
+    const promises = userIds.map(id =>
+        fetch(`https://jsonplaceholder.typicode.com/users/${id}`)
+            .then(r => r.json())
+    );
+    
+    return Promise.all(promises);
+}
+
+// 有錯誤繼續執行
+async function fetchUsersRobust(userIds) {
+    const promises = userIds.map(id =>
+        fetch(`https://jsonplaceholder.typicode.com/users/${id}`)
+            .then(r => r.json())
+            .catch(err => ({ error: id, message: err.message }))
+    );
+    
+    return Promise.all(promises);
+}
+            </div>
+
+            <h3>請求隊列 (按序執行)</h3>
+            <div class="demo-box">
+                <button onclick="demoRequestQueue()">執行順序請求</button>
+                <div class="demo-output" id="queue-output"></div>
+            </div>
+
+            <div class="code-block">
+// 依序執行多個請求
+async function fetchSequentially(urls) {
+    const results = [];
+    
+    for (const url of urls) {
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            results.push(data);
+        } catch (error) {
+            results.push({ error: error.message });
+        }
+    }
+    
+    return results;
+}
+
+// 使用 reduce
+async function fetchSequentiallyWithReduce(urls) {
+    return urls.reduce(
+        async (acc, url) => {
+            const results = await acc;
+            const response = await fetch(url);
+            const data = await response.json();
+            return [...results, data];
+        },
+        Promise.resolve([])
+    );
+}
+            </div>
+
+            <h3>數據預加載 (Preloading)</h3>
+            <div class="demo-box">
+                <button onclick="demoPreloading()">執行預加載</button>
+                <div class="demo-output" id="preload-output"></div>
+            </div>
+
+            <div class="code-block">
+// 在用戶操作前預加載數據
+let cachedData = null;
+
+function preloadUserData(userId) {
+    if (!cachedData) {
+        cachedData = fetch(`/api/users/${userId}`)
+            .then(r => r.json());
+    }
+    return cachedData;
+}
+
+async function displayUser(userId) {
+    // 預加載已經開始，直接 await 緩存的 Promise
+    const user = await preloadUserData(userId);
+    console.log('顯示用戶:', user);
+}
+
+// 在用戶點擊前開始預加載
+preloadUserData(1);
+
+// 用戶點擊時數據可能已經準備好
+setTimeout(() => displayUser(1), 2000);
+            </div>
+        </section>
+
+        <!-- ==================== 實踐項目 ==================== -->
+        <section>
+            <h2>💻 實踐項目：用戶列表應用</h2>
+
+            <div class="demo-box">
+                <button onclick="loadUsers()" class="btn-success">加載用戶列表</button>
+                <button onclick="clearUsers()" class="btn-danger">清空</button>
+                <div id="loading-status"></div>
+                <div id="users-list"></div>
+                <div class="demo-output" id="project-output"></div>
+            </div>
+
+            <div class="code-block">
+class UserManager {
+    constructor() {
+        this.users = [];
+        this.isLoading = false;
+    }
+    
+    async fetchUsers() {
+        this.isLoading = true;
+        try {
+            const response = await fetch(
+                'https://jsonplaceholder.typicode.com/users'
+            );
+            this.users = await response.json();
+            return this.users;
+        } catch (error) {
+            console.error('加載失敗:', error);
+            throw error;
+        } finally {
+            this.isLoading = false;
+        }
+    }
+    
+    async fetchUserWithPosts(userId) {
+        const [user, posts] = await Promise.all([
+            fetch(`/users/${userId}`).then(r => r.json()),
+            fetch(`/posts?userId=${userId}`).then(r => r.json())
+        ]);
+        return { user, posts };
+    }
+}
+
+const manager = new UserManager();
+await manager.fetchUsers();
+            </div>
+        </section>
+
+        <!-- ==================== 最佳實踐 ==================== -->
+        <section>
+            <h2>⚡ 最佳實踐</h2>
+
+            <div class="description">
+                <strong>✅ 應該做：</strong><br>
+                • 使用 async/await 替代 .then()<br>
+                • 總是使用 try/catch 處理錯誤<br>
+                • 驗證 response.ok 或檢查 HTTP 狀態<br>
+                • 設置請求超時<br>
+                • 使用 AbortController 支持取消<br>
+                • 檢查 response 格式後再解析<br>
+                • 實現重試機制<br>
+                • 使用 Promise.all() 並行請求
+            </div>
+
+            <div class="description" style="background: rgba(245, 87, 108, 0.1); border-left-color: #f5576c;">
+                <strong>❌ 避免做：</strong><br>
+                • 嵌套多個 .then() (回調地獄)<br>
+                • 忘記錯誤處理<br>
+                • 假設請求一定成功<br>
+                • 順序執行可並行的請求<br>
+                • 忽視 CORS 問題<br>
+                • 在全局作用域發起請求<br>
+                • 忘記取消訂閱或清理<br>
+                • 沒有超時保護
+            </div>
+
+            <h3>常見錯誤範例</h3>
+            <div class="demo-box">
+                <button onclick="demoCommonMistakes()">查看常見錯誤</button>
+                <div class="demo-output" id="mistakes-output"></div>
+            </div>
+
+            <div class="code-block">
+// ❌ 錯誤 1：沒有處理錯誤
+fetch('/api/data')
+    .then(r => r.json())
+    .then(data => console.log(data));
+
+// ✅ 正確
+async function getData() {
+    try {
+        const response = await fetch('/api/data');
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return await response.json();
+    } catch (error) {
+        console.error('失敗:', error);
+    }
+}
+
+// ❌ 錯誤 2：順序執行導致耗時長
+const user = await fetchUser(1); // 1秒
+const posts = await fetchPosts(user.id); // 1秒
+// 總耗時: 2秒
+
+// ✅ 正確：並行執行
+const [user, posts] = await Promise.all([
+    fetchUser(1),
+    fetchPosts(1)
+]);
+// 總耗時: 1秒
+
+// ❌ 錯誤 3：沒有驗證 JSON
+const data = await response.json(); // 可能失敗
+
+// ✅ 正確：驗證 Content-Type
+const contentType = response.headers.get('content-type');
+if (contentType?.includes('application/json')) {
+    const data = await response.json();
+}
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>JavaScript 非同步處理與 API 學習教程 | 2026</p>
+        <p>掌握非同步編程，提升開發效率 ✨</p>
+    </footer>
+
+    <script>
+        // ==================== 基礎示範 ====================
+        function demoSynchronous() {
+            let output = "同步執行示範\n";
+            output += "==================\n\n";
+            
+            const start = performance.now();
+            output += "開始時間: " + new Date().toLocaleTimeString() + "\n";
+            
+            // 模擬耗時操作
+            let sum = 0;
+            for (let i = 0; i < 100000000; i++) {
+                sum += i;
+            }
+            
+            const elapsed = (performance.now() - start).toFixed(2);
+            output += "結束時間: " + new Date().toLocaleTimeString() + "\n";
+            output += `耗時: ${elapsed} ms\n\n`;
+            output += "問題: 程序被阻塞，UI 無響應";
+            
+            document.getElementById('sync-async-output').textContent = output;
+        }
+
+        function demoAsynchronous() {
+            let output = "非同步執行示範\n";
+            output += "==================\n\n";
+            
+            output += "開始時間: " + new Date().toLocaleTimeString() + "\n";
+            output += "啟動非同步操作...\n";
+            
+            setTimeout(() => {
+                output += "結束時間: " + new Date().toLocaleTimeString() + "\n";
+                output += "耗時: 約 1000ms\n\n";
+                output += "優點: UI 保持響應，代碼可以繼續執行";
+                document.getElementById('sync-async-output').textContent = output;
+            }, 1000);
+            
+            document.getElementById('sync-async-output').textContent = output;
+        }
+
+        // ==================== 回調示範 ====================
+        function demoCallback() {
+            let output = "回調函數示範\n";
+            output += "==================\n\n";
+            
+            document.getElementById('callback-output').textContent = output + "加載中...";
+            
+            function fetchData(callback) {
+                setTimeout(() => {
+                    const data = { id: 1, name: 'Alice', age: 25 };
+                    callback(data);
+                }, 1000);
+            }
+            
+            fetchData((data) => {
+                output += "獲得數據:\n";
+                output += JSON.stringify(data, null, 2);
+                document.getElementById('callback-output').textContent = output;
+            });
+        }
+
+        // ==================== Promise 示範 ====================
+        function demoPromiseStates() {
+            let output = "Promise 狀態演示\n";
+            output += "==================\n\n";
+            
+            document.getElementById('promise-states-output').textContent = output + "執行中...";
+            
+            const promise = new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    if (Math.random() > 0.5) {
+                        resolve('✅ 成功完成!');
+                    } else {
+                        reject('❌ 失敗!');
+                    }
+                }, 1000);
+            });
+            
+            promise
+                .then(result => {
+                    output += "狀態: Fulfilled (成功)\n";
+                    output += "結果: " + result;
+                    document.getElementById('promise-states-output').textContent = output;
+                })
+                .catch(error => {
+                    output += "狀態: Rejected (失敗)\n";
+                    output += "錯誤: " + error;
+                    document.getElementById('promise-states-output').textContent = output;
+                });
+        }
+
+        function demoPromiseChain() {
+            let output = "Promise 鏈式調用\n";
+            output += "==================\n\n";
+            
+            document.getElementById('promise-chain-output').textContent = output + "執行中...";
+            
+            // 模擬 API 調用
+            function fetchUser(id) {
+                return new Promise(resolve => {
+                    setTimeout(() => resolve({ id, name: 'Alice' }), 500);
+                });
+            }
+            
+            function fetchPosts(userId) {
+                return new Promise(resolve => {
+                    setTimeout(() => resolve([
+                        { id: 1, title: '文章1' },
+                        { id: 2, title: '文章2' }
+                    ]), 500);
+                });
+            }
+            
+            fetchUser(1)
+                .then(user => {
+                    output += `第 1 步: 獲得用戶\n${JSON.stringify(user)}\n\n`;
+                    return fetchPosts(user.id);
+                })
+                .then(posts => {
+                    output += `第 2 步: 獲得文章\n${JSON.stringify(posts, null, 2)}\n\n`;
+                    output += "✅ 鏈式調用完成!";
+                    document.getElementById('promise-chain-output').textContent = output;
+                })
+                .catch(error => {
+                    output += "❌ 發生錯誤: " + error;
+                    document.getElementById('promise-chain-output').textContent = output;
+                });
+        }
+
+        function demoPromiseAll() {
+            let output = "Promise.all() 演示\n";
+            output += "==================\n\n";
+            
+            document.getElementById('promise-all-output').textContent = output + "同時加載 3 個數據源...";
+            
+            const p1 = new Promise(resolve => setTimeout(() => resolve('數據1'), 500));
+            const p2 = new Promise(resolve => setTimeout(() => resolve('數據2'), 800));
+            const p3 = new Promise(resolve => setTimeout(() => resolve('數據3'), 600));
+            
+            Promise.all([p1, p2, p3])
+                .then(results => {
+                    output += `並行結果:\n`;
+                    results.forEach((r, i) => {
+                        output += `  [${i}]: ${r}\n`;
+                    });
+                    output += "\n⏱️ 總耗時: 約 800ms (最長的那個)";
+                    document.getElementById('promise-all-output').textContent = output;
+                });
+        }
+
+        function demoPromiseRace() {
+            let output = "Promise.race() 演示\n";
+            output += "==================\n\n";
+            
+            document.getElementById('promise-race-output').textContent = output + "競速執行...";
+            
+            const p1 = new Promise(resolve => setTimeout(() => resolve('首先完成'), 800));
+            const p2 = new Promise(resolve => setTimeout(() => resolve('次序完成'), 1000));
+            const p3 = new Promise(resolve => setTimeout(() => resolve('最後完成'), 1200));
+            
+            Promise.race([p1, p2, p3])
+                .then(result => {
+                    output += `首個完成: ${result}\n\n`;
+                    output += "其他 Promise 仍在運行，但結果被忽視";
+                    document.getElementById('promise-race-output').textContent = output;
+                });
+        }
+
+        function demoPromiseAllSettled() {
+            let output = "Promise.allSettled() 演示\n";
+            output += "==================\n\n";
+            
+            document.getElementById('promise-allsettled-output').textContent = output + "執行中...";
+            
+            const p1 = new Promise(resolve => setTimeout(() => resolve('成功1'), 400));
+            const p2 = new Promise((_, reject) => setTimeout(() => reject('失敗!'), 500));
+            const p3 = new Promise(resolve => setTimeout(() => resolve('成功2'), 600));
+            
+            Promise.allSettled([p1, p2, p3])
+                .then(results => {
+                    output += "結果:\n";
+                    results.forEach((r, i) => {
+                        if (r.status === 'fulfilled') {
+                            output += `  [${i}] ✅ ${r.value}\n`;
+                        } else {
+                            output += `  [${i}] ❌ ${r.reason}\n`;
+                        }
+                    });
+                    document.getElementById('promise-allsettled-output').textContent = output;
+                });
+        }
+
+        function demoPromiseAny() {
+            let output = "Promise.any() 演示\n";
+            output += "==================\n\n";
+            
+            document.getElementById('promise-any-output').textContent = output + "執行中...";
+            
+            const p1 = new Promise((_, reject) => setTimeout(() => reject('失敗1'), 400));
+            const p2 = new Promise(resolve => setTimeout(() => resolve('成功!'), 500));
+            const p3 = new Promise((_, reject) => setTimeout(() => reject('失敗2'), 600));
+            
+            Promise.any([p1, p2, p3])
+                .then(result => {
+                    output += `✅ 首個成功: ${result}\n\n`;
+                    output += "即使有 Promise 失敗，只要有一個成功就返回";
+                    document.getElementById('promise-any-output').textContent = output;
+                });
+        }
+
+        // ==================== Async/Await 示範 ====================
+        async function demoAsyncAwaitBasic() {
+            let output = "Async/Await 基本示範\n";
+            output += "==================\n\n";
+            
+            document.getElementById('async-await-basic-output').textContent = output + "執行中...";
+            
+            function delay(ms, value) {
+                return new Promise(resolve => setTimeout(() => resolve(value), ms));
+            }
+            
+            try {
+                output += "步驟 1: 獲取用戶信息\n";
+                const user = await delay(500, { id: 1, name: 'Alice' });
+                output += JSON.stringify(user) + "\n\n";
+                
+                output += "步驟 2: 獲取用戶文章\n";
+                const posts = await delay(500, [{ id: 1, title: '文章 1' }]);
+                output += JSON.stringify(posts, null, 2) + "\n\n";
+                
+                output += "✅ 全部完成!";
+            } catch (error) {
+                output += "❌ 錯誤: " + error;
+            }
+            
+            document.getElementById('async-await-basic-output').textContent = output;
+        }
+
+        async function demoParallelExecution() {
+            let output = "並行執行示範\n";
+            output += "==================\n\n";
+            
+            document.getElementById('parallel-output').textContent = output + "執行中...";
+            
+            function delay(ms, value) {
+                return new Promise(resolve => setTimeout(() => resolve(value), ms));
+            }
+            
+            const start = performance.now();
+            
+            // 並行執行
+            const [user, posts, comments] = await Promise.all([
+                delay(500, '用戶數據'),
+                delay(600, '文章數據'),
+                delay(700, '評論數據')
+            ]);
+            
+            const elapsed = (performance.now() - start).toFixed(0);
+            
+            output += "並行獲取 3 個數據:\n";
+            output += `- 用戶: ${user}\n`;
+            output += `- 文章: ${posts}\n`;
+            output += `- 評論: ${comments}\n\n`;
+            output += `⏱️ 總耗時: ${elapsed}ms (約等於最長的 700ms)`;
+            
+            document.getElementById('parallel-output').textContent = output;
+        }
+
+        async function demoErrorHandling() {
+            let output = "錯誤處理示範\n";
+            output += "==================\n\n";
+            
+            document.getElementById('error-handling-output').textContent = output + "執行中...";
+            
+            function unreliableFetch() {
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        if (Math.random() > 0.5) {
+                            resolve({ data: '成功' });
+                        } else {
+                            reject(new Error('網絡錯誤'));
+                        }
+                    }, 500);
+                });
+            }
+            
+            try {
+                output += "嘗試獲取數據...\n";
+                const response = await unreliableFetch();
+                output += `✅ 成功: ${JSON.stringify(response)}`;
+            } catch (error) {
+                output += `❌ 錯誤: ${error.message}`;
+            } finally {
+                output += "\n\n✓ 清理工作完成";
+            }
+            
+            document.getElementById('error-handling-output').textContent = output;
+        }
+
+        async function demoRetryLogic() {
+            let output = "重試機制示範\n";
+            output += "==================\n\n";
+            
+            document.getElementById('retry-output').textContent = output + "開始重試...";
+            
+            async function unreliableOperation() {
+                if (Math.random() > 0.3) {
+                    throw new Error('隨機失敗');
+                }
+                return 'Success!';
+            }
+            
+            async function retryWithBackoff(fn, maxRetries = 3) {
+                for (let i = 0; i < maxRetries; i++) {
+                    try {
+                        output += `嘗試 ${i + 1}/${maxRetries}\n`;
+                        const result = await fn();
+                        output += `✅ 成功: ${result}`;
+                        return result;
+                    } catch (error) {
+                        if (i === maxRetries - 1) {
+                            output += `❌ 最終失敗: ${error.message}`;
+                            throw error;
+                        }
+                        const delay = 1000 * (i + 1);
+                        output += `等待 ${delay}ms 後重試...\n`;
+                        await new Promise(r => setTimeout(r, delay));
+                    }
+                }
+            }
+            
+            try {
+                await retryWithBackoff(unreliableOperation, 3);
+            } catch (e) {
+                // 處理最終失敗
+            }
+            
+            document.getElementById('retry-output').textContent = output;
+        }
+
+        // ==================== Fetch API 示範 ====================
+        async function demoFetchGET() {
+            let output = "GET 請求示範\n";
+            output += "==================\n\n";
+            
+            document.getElementById('fetch-get-output').textContent = output + "發送請求中...";
+            
+            try {
+                output += "URL: https://jsonplaceholder.typicode.com/users/1\n\n";
+                
+                const response = await fetch('https://jsonplaceholder.typicode.com/users/1');
+                
+                output += `狀態碼: ${response.status}\n`;
+                output += `狀態文本: ${response.statusText}\n`;
+                output += `OK: ${response.ok}\n\n`;
+                
+                const data = await response.json();
+                output += "響應數據:\n";
+                output += JSON.stringify(data, null, 2);
+                
+            } catch (error) {
+                output += `❌ 請求失敗: ${error.message}`;
+            }
+            
+            document.getElementById('fetch-get-output').textContent = output;
+        }
+
+        async function demoFetchPOST() {
+            let output = "POST 請求示範\n";
+            output += "==================\n\n";
+            
+            document.getElementById('fetch-post-output').textContent = output + "發送請求中...";
+            
+            try {
+                const newUser = {
+                    name: 'Alice',
+                    email: 'alice@example.com',
+                    phone: '123-456-7890'
+                };
+                
+                output += "發送數據:\n";
+                output += JSON.stringify(newUser, null, 2) + "\n\n";
+                
+                const response = await fetch(
+                    'https://jsonplaceholder.typicode.com/users',
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(newUser)
+                    }
+                );
+                
+                const result = await response.json();
+                output += "服務器響應:\n";
+                output += JSON.stringify(result, null, 2);
+                
+            } catch (error) {
+                output += `❌ 請求失敗: ${error.message}`;
+            }
+            
+            document.getElementById('fetch-post-output').textContent = output;
+        }
+
+        async function demoFetchPUT() {
+            let output = "PUT 請求示範\n";
+            output += "==================\n\n";
+            
+            document.getElementById('fetch-put-output').textContent = output + "發送請求中...";
+            
+            try {
+                const userId = 1;
+                const updatedUser = {
+                    id: userId,
+                    name: 'Bob Updated',
+                    email: 'bob@example.com'
+                };
+                
+                output += `更新用戶 ${userId}\n\n`;
+                output += "新數據:\n";
+                output += JSON.stringify(updatedUser, null, 2) + "\n\n";
+                
+                const response = await fetch(
+                    `https://jsonplaceholder.typicode.com/users/${userId}`,
+                    {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(updatedUser)
+                    }
+                );
+                
+                const result = await response.json();
+                output += "更新結果:\n";
+                output += JSON.stringify(result, null, 2);
+                
+            } catch (error) {
+                output += `❌ 請求失敗: ${error.message}`;
+            }
+            
+            document.getElementById('fetch-put-output').textContent = output;
+        }
+
+        async function demoFetchDELETE() {
+            let output = "DELETE 請求示範\n";
+            output += "==================\n\n";
+            
+            document.getElementById('fetch-delete-output').textContent = output + "發送請求中...";
+            
+            try {
+                const userId = 1;
+                output += `刪除用戶 ${userId}\n\n`;
+                
+                const response = await fetch(
+                    `https://jsonplaceholder.typicode.com/users/${userId}`,
+                    {
+                        method: 'DELETE'
+                    }
+                );
+                
+                output += `狀態碼: ${response.status}\n`;
+                output += `成功: ${response.ok}\n\n`;
+                
+                if (response.ok) {
+                    output += "✅ 刪除成功";
+                } else {
+                    output += `❌ 刪除失敗: ${response.status}`;
+                }
+                
+            } catch (error) {
+                output += `❌ 請求失敗: ${error.message}`;
+            }
+            
+            document.getElementById('fetch-delete-output').textContent = output;
+        }
+
+        // ==================== 進階示範 ====================
+        let abortController = null;
+
+        async function demoAbortRequest() {
+            let output = "取消請求示範\n";
+            output += "==================\n\n";
+            
+            document.getElementById('abort-output').textContent = output + "發送長時間請求中...";
+            
+            abortController = new AbortController();
+            
+            try {
+                output += "模擬 10 秒長時間操作...\n";
+                output += "(點擊 '取消請求' 按鈕來中止)\n\n";
+                
+                // 模擬長時間操作
+                const promise = new Promise((resolve, reject) => {
+                    const timeout = setTimeout(() => {
+                        resolve('✅ 操作完成');
+                    }, 10000);
+                    
+                    abortController.signal.addEventListener('abort', () => {
+                        clearTimeout(timeout);
+                        reject(new Error('操作被取消'));
+                    });
+                });
+                
+                const result = await promise;
+                output += result;
+                
+            } catch (error) {
+                output += `❌ ${error.message}`;
+            }
+            
+            document.getElementById('abort-output').textContent = output;
+        }
+
+        function cancelAbortRequest() {
+            if (abortController) {
+                abortController.abort();
+            }
+        }
+
+        async function demoTimeout() {
+            let output = "超時控制示範\n";
+            output += "==================\n\n";
+            
+            document.getElementById('timeout-output').textContent = output + "發送請求中...";
+            
+            async function fetchWithTimeout(url, timeout = 3000) {
+                const controller = new AbortController();
+                const id = setTimeout(() => controller.abort(), timeout);
+                
+                try {
+                    const response = await fetch(url, {
+                        signal: controller.signal
+                    });
+                    return await response.json();
+                } catch (error) {
+                    if (error.name === 'AbortError') {
+                        throw new Error(`請求超時 (${timeout}ms)`);
+                    }
+                    throw error;
+                } finally {
+                    clearTimeout(id);
+                }
+            }
+            
+            try {
+                output += "設置 3 秒超時...\n";
+                const data = await fetchWithTimeout(
+                    'https://jsonplaceholder.typicode.com/users/1',
+                    3000
+                );
+                output += "✅ 請求成功:\n";
+                output += JSON.stringify(data, null, 2);
+            } catch (error) {
+                output += `❌ ${error.message}`;
+            }
+            
+            document.getElementById('timeout-output').textContent = output;
+        }
+
+        async function demoBatchRequests() {
+            let output = "批量請求示範\n";
+            output += "==================\n\n";
+            
+            document.getElementById('batch-output').textContent = output + "發送 5 個並行請求...";
+            
+            try {
+                const userIds = [1, 2, 3, 4, 5];
+                
+                output += `請求用戶 IDs: [${userIds.join(', ')}]\n\n`;
+                
+                const promises = userIds.map(id =>
+                    fetch(`https://jsonplaceholder.typicode.com/users/${id}`)
+                        .then(r => r.json())
+                );
+                
+                const users = await Promise.all(promises);
+                
+                output += "結果:\n";
+                users.forEach(user => {
+                    output += `  - ${user.name} (${user.email})\n`;
+                });
+                
+            } catch (error) {
+                output += `❌ 請求失敗: ${error.message}`;
+            }
+            
+            document.getElementById('batch-output').textContent = output;
+        }
+
+        async function demoRequestQueue() {
+            let output = "順序請求示範\n";
+            output += "==================\n\n";
+            
+            document.getElementById('queue-output').textContent = output + "順序發送請求...";
+            
+            try {
+                const userIds = [1, 2, 3];
+                output += `依序請求用戶: [${userIds.join(', ')}]\n\n`;
+                
+                const results = [];
+                
+                for (let i = 0; i < userIds.length; i++) {
+                    const userId = userIds[i];
+                    output += `[${i + 1}/${userIds.length}] 獲取用戶 ${userId}...`;
+                    
+                    const response = await fetch(
+                        `https://jsonplaceholder.typicode.com/users/${userId}`
+                    );
+                    const user = await response.json();
+                    results.push(user);
+                    
+                    output += ` ✅\n`;
+                }
+                
+                output += "\n結果:\n";
+                results.forEach(user => {
+                    output += `  - ${user.name}\n`;
+                });
+                
+            } catch (error) {
+                output += `❌ 請求失敗: ${error.message}`;
+            }
+            
+            document.getElementById('queue-output').textContent = output;
+        }
+
+        async function demoPreloading() {
+            let output = "數據預加載示範\n";
+            output += "==================\n\n";
+            
+            document.getElementById('preload-output').textContent = output + "演示中...";
+            
+            let cachedData = null;
+            
+            function preloadUserData(userId) {
+                if (!cachedData) {
+                    output += "🔄 開始預加載用戶 1 的數據...\n";
+                    cachedData = fetch(`https://jsonplaceholder.typicode.com/users/1`)
+                        .then(r => r.json());
+                }
+                return cachedData;
+            }
+            
+            async function displayUser() {
+                output += "⏳ 等待 2 秒後顯示用戶...\n\n";
+                await new Promise(r => setTimeout(r, 2000));
+                
+                const user = await preloadUserData(1);
+                output += `✅ 用戶數據已準備: ${user.name}`;
+            }
+            
+            // 立即開始預加載
+            preloadUserData(1);
+            
+            // 2 秒後顯示
+            await displayUser();
+            
+            document.getElementById('preload-output').textContent = output;
+        }
+
+        // ==================== 項目示範 ====================
+        async function loadUsers() {
+            const statusEl = document.getElementById('loading-status');
+            const listEl = document.getElementById('users-list');
+            
+            statusEl.innerHTML = '<span class="loading"></span>加載中...';
+            listEl.innerHTML = '';
+            
+            try {
+                const response = await fetch(
+                    'https://jsonplaceholder.typicode.com/users?_limit=5'
+                );
+                const users = await response.json();
+                
+                statusEl.innerHTML = '<span class="status-badge status-success">✅ 已加載</span>';
+                
+                let html = '<div style="display: grid; gap: 10px; margin-top: 15px;">';
+                users.forEach(user => {
+                    html += `
+                        <div style="background: #f5f5f5; padding: 12px; border-radius: 8px;">
+                            <strong>${user.name}</strong><br/>
+                            📧 ${user.email}<br/>
+                            🌐 ${user.website}
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                
+                listEl.innerHTML = html;
+                
+            } catch (error) {
+                statusEl.innerHTML = '<span class="status-badge status-error">❌ 加載失敗</span>';
+                listEl.innerHTML = `<div style="color: #721c24; padding: 10px;">錯誤: ${error.message}</div>`;
+            }
+        }
+
+        function clearUsers() {
+            document.getElementById('loading-status').innerHTML = '';
+            document.getElementById('users-list').innerHTML = '';
+        }
+
+        function demoCommonMistakes() {
+            let output = "常見錯誤示範\n";
+            output += "==================\n\n";
+            
+            output += "❌ 錯誤 1: 沒有驗證狀態碼\n";
+            output += "fetch('/api/data')\n";
+            output += "    .then(r => r.json())\n";
+            output += "    .then(data => console.log(data));\n\n";
+            
+            output += "✅ 正確做法:\n";
+            output += "const response = await fetch('/api/data');\n";
+            output += "if (!response.ok) throw new Error(response.status);\n";
+            output += "const data = await response.json();\n\n";
+            
+            output += "❌ 錯誤 2: 順序執行導致慢\n";
+            output += "const a = await fetch(...); // 1秒\n";
+            output += "const b = await fetch(...); // 1秒\n";
+            output += "// 總耗時: 2秒\n\n";
+            
+            output += "✅ 正確做法:\n";
+            output += "const [a, b] = await Promise.all([\n";
+            output += "    fetch(...),\n";
+            output += "    fetch(...)\n";
+            output += "]);\n";
+            output += "// 總耗時: 1秒\n";
+            
+            document.getElementById('mistakes-output').textContent = output;
+        }
+    </script>
+</body>
+</html>

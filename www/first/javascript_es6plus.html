@@ -1,0 +1,1636 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript ES6+ 現代語法示範</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', '微軟正黑體', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 36px;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 16px;
+        }
+
+        section {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        section h2 {
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 24px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #555;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        /* ==================== 按鈕樣式 ==================== */
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        /* ==================== 演示容器 ==================== */
+        .demo-box {
+            background: #f0f0f0;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .demo-output {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 10px;
+            min-height: 50px;
+            color: #333;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            margin: 15px 0;
+            border-left: 4px solid #667eea;
+            line-height: 1.5;
+        }
+
+        .description {
+            background: rgba(102, 126, 234, 0.1);
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            color: #333;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 15px 0;
+        }
+
+        .comparison-box {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .comparison-box h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .comparison-box .code-block {
+            margin: 10px 0;
+            font-size: 12px;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .feature-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #11998e;
+            font-weight: bold;
+        }
+
+        .demo-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+
+        /* ==================== 響應式 ==================== */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 28px;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            section {
+                padding: 20px;
+            }
+        }
+
+        footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            padding: 30px 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 JavaScript ES6+ 現代語法詳細示範</h1>
+        <p class="subtitle">掌握現代 JavaScript 的核心特性</p>
+
+        <!-- ==================== let 和 const ==================== -->
+        <section>
+            <h2>📦 let 和 const (變數宣告)</h2>
+
+            <h3>var vs let vs const 對比</h3>
+            <div class="demo-box">
+                <button onclick="demoLetConst()">執行示範</button>
+                <div class="demo-output" id="letconst-output"></div>
+            </div>
+
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>❌ var (舊方式)</h4>
+                    <div class="code-block">
+var name = "Alice";
+var name = "Bob"; // 可以重新宣告
+name = "Carol"; // 可以重新賦值
+// 函數作用域
+// 會被提升 (hoisting)
+                    </div>
+                </div>
+                <div class="comparison-box">
+                    <h4>✅ let (推薦)</h4>
+                    <div class="code-block">
+let age = 25;
+// let age = 30; // 錯誤！不能重新宣告
+age = 26; // 可以重新賦值
+// 塊作用域 {}
+// 暫時死區 (TDZ)
+                    </div>
+                </div>
+            </div>
+
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>✅ const (常數)</h4>
+                    <div class="code-block">
+const PI = 3.14159;
+// PI = 3.14; // 錯誤！不能重新賦值
+// const PI; // 錯誤！必須初始化
+
+// 物件可以修改屬性
+const obj = { name: "Alice" };
+obj.name = "Bob"; // ✅ 可以
+                    </div>
+                </div>
+                <div class="comparison-box">
+                    <h4>📊 對比表</h4>
+                    <table style="width: 100%; font-size: 12px; border-collapse: collapse;">
+                        <tr style="border-bottom: 1px solid #ddd;">
+                            <td style="padding: 5px;"><strong>特性</strong></td>
+                            <td style="padding: 5px;"><strong>var</strong></td>
+                            <td style="padding: 5px;"><strong>let</strong></td>
+                            <td style="padding: 5px;"><strong>const</strong></td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #ddd; background: #f9f9f9;">
+                            <td style="padding: 5px;">重新宣告</td>
+                            <td style="padding: 5px;">✅</td>
+                            <td style="padding: 5px;">❌</td>
+                            <td style="padding: 5px;">❌</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #ddd;">
+                            <td style="padding: 5px;">重新賦值</td>
+                            <td style="padding: 5px;">✅</td>
+                            <td style="padding: 5px;">✅</td>
+                            <td style="padding: 5px;">❌</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #ddd; background: #f9f9f9;">
+                            <td style="padding: 5px;">塊作用域</td>
+                            <td style="padding: 5px;">❌</td>
+                            <td style="padding: 5px;">✅</td>
+                            <td style="padding: 5px;">✅</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="description">
+                <strong>最佳實踐：</strong><br>
+                • 優先使用 <strong>const</strong> - 除非需要重新賦值<br>
+                • 其次使用 <strong>let</strong> - 替代 var<br>
+                • 避免使用 <strong>var</strong> - 作用域容易混亂
+            </div>
+        </section>
+
+        <!-- ==================== 模板字符串 ==================== -->
+        <section>
+            <h2>📝 模板字符串 (Template Literals)</h2>
+
+            <h3>基本用法</h3>
+            <div class="demo-box">
+                <button onclick="demoTemplateString()">執行示範</button>
+                <div class="demo-output" id="template-output"></div>
+            </div>
+
+            <h3>多行字符串</h3>
+            <div class="demo-box">
+                <button onclick="demoMultilineString()">執行示範</button>
+                <div class="demo-output" id="multiline-output"></div>
+            </div>
+
+            <div class="code-block">
+// ❌ 舊方式
+const name = "Alice";
+const greeting = "Hello, " + name + "!";
+
+// ✅ 新方式 - 使用反引號 `
+const greeting = `Hello, ${name}!`;
+
+// 表達式
+const result = `5 + 3 = ${5 + 3}`;
+
+// 多行字符串
+const html = `
+  &lt;div&gt;
+    &lt;h1&gt;標題&lt;/h1&gt;
+    &lt;p&gt;內容&lt;/p&gt;
+  &lt;/div&gt;
+`;
+
+// 標籤模板
+function myTag(strings, ...values) {
+    return strings.join('');
+}
+const result = myTag`Hello ${name}`;
+            </div>
+
+            <div class="description">
+                <strong>模板字符串的優點：</strong><br>
+                • 支持內嵌表達式 ${}<br>
+                • 支持多行字符串<br>
+                • 提高代碼可讀性<br>
+                • 支持標籤模板函數
+            </div>
+        </section>
+
+        <!-- ==================== 箭頭函數 ==================== -->
+        <section>
+            <h2>🎯 箭頭函數 (Arrow Functions)</h2>
+
+            <h3>基本語法對比</h3>
+            <div class="demo-box">
+                <button onclick="demoArrowFunction()">執行示範</button>
+                <div class="demo-output" id="arrow-output"></div>
+            </div>
+
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>❌ 普通函數</h4>
+                    <div class="code-block">
+function add(a, b) {
+    return a + b;
+}
+
+const greet = function(name) {
+    return `Hello, ${name}!`;
+};
+                    </div>
+                </div>
+                <div class="comparison-box">
+                    <h4>✅ 箭頭函數</h4>
+                    <div class="code-block">
+const add = (a, b) => {
+    return a + b;
+};
+
+// 單行可省略大括號和return
+const add = (a, b) => a + b;
+
+// 單個參數省略括號
+const square = x => x * x;
+
+// 無參數保留括號
+const getRandom = () => Math.random();
+                    </div>
+                </div>
+            </div>
+
+            <h3>this 綁定差異</h3>
+            <div class="demo-box">
+                <button onclick="demoThisBinding()">執行示範</button>
+                <div class="demo-output" id="this-output"></div>
+            </div>
+
+            <div class="code-block">
+// 普通函數 - this 動態綁定
+const obj1 = {
+    name: "Alice",
+    greet: function() {
+        console.log(this.name); // this 指向 obj1
+    }
+};
+
+// 箭頭函數 - this 靜態綁定 (繼承外層 this)
+const obj2 = {
+    name: "Bob",
+    greet: () => {
+        console.log(this); // this 指向全局對象或 undefined
+    }
+};
+
+// 回調中的 this
+const btn = document.getElementById('btn');
+btn.addEventListener('click', function() {
+    console.log(this); // this 指向 btn 元素
+});
+
+btn.addEventListener('click', () => {
+    console.log(this); // this 指向外層作用域
+});
+            </div>
+
+            <div class="description">
+                <strong>箭頭函數注意事項：</strong><br>
+                • <strong>無 this 綁定</strong> - 使用外層作用域的 this<br>
+                • <strong>不能用作構造函數</strong> - 無 new 操作<br>
+                • <strong>無 arguments 對象</strong> - 使用剩餘參數代替<br>
+                • <strong>不能用作生成器函數</strong>
+            </div>
+        </section>
+
+        <!-- ==================== 解構賦值 ==================== -->
+        <section>
+            <h2>🎁 解構賦值 (Destructuring)</h2>
+
+            <h3>數組解構</h3>
+            <div class="demo-box">
+                <button onclick="demoArrayDestructuring()">執行示範</button>
+                <div class="demo-output" id="array-destruct-output"></div>
+            </div>
+
+            <div class="code-block">
+// ❌ 舊方式
+const arr = [1, 2, 3];
+const first = arr[0];
+const second = arr[1];
+
+// ✅ 新方式
+const [first, second, third] = [1, 2, 3];
+
+// 跳過元素
+const [a, , c] = [1, 2, 3];
+
+// 使用剩餘運算符
+const [head, ...rest] = [1, 2, 3, 4, 5];
+// head = 1, rest = [2, 3, 4, 5]
+
+// 交換變數
+let x = 10, y = 20;
+[x, y] = [y, x]; // x = 20, y = 10
+            </div>
+
+            <h3>物件解構</h3>
+            <div class="demo-box">
+                <button onclick="demoObjectDestructuring()">執行示範</button>
+                <div class="demo-output" id="object-destruct-output"></div>
+            </div>
+
+            <div class="code-block">
+// ❌ 舊方式
+const person = { name: "Alice", age: 25 };
+const name = person.name;
+const age = person.age;
+
+// ✅ 新方式
+const { name, age } = { name: "Alice", age: 25 };
+
+// 重命名
+const { name: personName, age: personAge } = person;
+
+// 設置默認值
+const { name = "Unknown", city = "NYC" } = person;
+
+// 嵌套解構
+const { address: { street, city } } = person;
+
+// 在函數參數中使用
+function printPerson({ name, age }) {
+    console.log(`${name} is ${age} years old`);
+}
+            </div>
+
+            <div class="description">
+                <strong>解構的優點：</strong><br>
+                • 代碼更簡潔<br>
+                • 易於提取需要的值<br>
+                • 支持默認值<br>
+                • 支持重命名和嵌套
+            </div>
+        </section>
+
+        <!-- ==================== 擴展運算符 ==================== -->
+        <section>
+            <h2>📤 擴展運算符 (Spread Operator)</h2>
+
+            <h3>數組擴展</h3>
+            <div class="demo-box">
+                <button onclick="demoSpreadArray()">執行示範</button>
+                <div class="demo-output" id="spread-array-output"></div>
+            </div>
+
+            <div class="code-block">
+// 複製數組
+const arr1 = [1, 2, 3];
+const arr2 = [...arr1]; // [1, 2, 3]
+
+// 合併數組
+const arr3 = [1, 2];
+const arr4 = [3, 4];
+const combined = [...arr3, ...arr4]; // [1, 2, 3, 4]
+
+// 添加元素
+const newArr = [0, ...arr1, 4]; // [0, 1, 2, 3, 4]
+
+// 轉換類數組對象
+const str = "Hello";
+const chars = [...str]; // ['H', 'e', 'l', 'l', 'o']
+            </div>
+
+            <h3>物件擴展</h3>
+            <div class="demo-box">
+                <button onclick="demoSpreadObject()">執行示範</button>
+                <div class="demo-output" id="spread-object-output"></div>
+            </div>
+
+            <div class="code-block">
+// 複製物件
+const obj1 = { a: 1, b: 2 };
+const obj2 = { ...obj1 }; // { a: 1, b: 2 }
+
+// 合併物件
+const obj3 = { c: 3 };
+const merged = { ...obj1, ...obj3 }; // { a: 1, b: 2, c: 3 }
+
+// 覆蓋屬性
+const updated = { ...obj1, b: 99 }; // { a: 1, b: 99 }
+
+// 在函數參數中使用
+function sum(a, b, c) {
+    return a + b + c;
+}
+const numbers = [1, 2, 3];
+sum(...numbers); // sum(1, 2, 3)
+            </div>
+
+            <div class="description">
+                <strong>擴展運算符的用途：</strong><br>
+                • 複製數組和物件（淺拷貝）<br>
+                • 合併數組和物件<br>
+                • 在函數中展開參數<br>
+                • 轉換類數組對象
+            </div>
+        </section>
+
+        <!-- ==================== 默認參數 ==================== -->
+        <section>
+            <h2>⚙️ 默認參數 (Default Parameters)</h2>
+
+            <h3>基本用法</h3>
+            <div class="demo-box">
+                <button onclick="demoDefaultParams()">執行示範</button>
+                <div class="demo-output" id="default-params-output"></div>
+            </div>
+
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>❌ 舊方式</h4>
+                    <div class="code-block">
+function greet(name) {
+    if (!name) {
+        name = "Guest";
+    }
+    return `Hello, ${name}`;
+}
+
+function greet2(name) {
+    name = name || "Guest";
+}
+                    </div>
+                </div>
+                <div class="comparison-box">
+                    <h4>✅ 新方式</h4>
+                    <div class="code-block">
+function greet(name = "Guest") {
+    return `Hello, ${name}`;
+}
+
+// 支持表達式
+function createId(prefix = "ID_") {
+    return prefix + Date.now();
+}
+
+// 使用前面的參數
+function repeat(str, times = 1) {
+    return str.repeat(times);
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-block">
+// 技巧：檢測是否傳入參數
+function test(x = undefined) {
+    if (x === undefined) {
+        console.log('未傳入參數');
+    }
+}
+
+// 強制要求參數
+function required(paramName = undefined) {
+    if (paramName === undefined) {
+        throw new Error(`參數 ${paramName} 為必填項`);
+    }
+}
+
+function doSomething(requiredParam = required('requiredParam')) {
+    console.log(requiredParam);
+}
+            </div>
+        </section>
+
+        <!-- ==================== 剩餘參數 ==================== -->
+        <section>
+            <h2>📦 剩餘參數 (Rest Parameters)</h2>
+
+            <h3>基本用法</h3>
+            <div class="demo-box">
+                <button onclick="demoRestParams()">執行示範</button>
+                <div class="demo-output" id="rest-params-output"></div>
+            </div>
+
+            <div class="code-block">
+// ❌ 舊方式 - 使用 arguments
+function sum() {
+    let total = 0;
+    for (let i = 0; i < arguments.length; i++) {
+        total += arguments[i];
+    }
+    return total;
+}
+
+// ✅ 新方式 - 使用剩餘參數
+function sum(...numbers) {
+    return numbers.reduce((a, b) => a + b, 0);
+}
+
+// 結合其他參數
+function greetMany(greeting, ...names) {
+    return greeting + " " + names.join(", ");
+}
+greetMany("Hello", "Alice", "Bob", "Carol");
+
+// 在箭頭函數中
+const multiply = (...nums) => nums.reduce((a, b) => a * b, 1);
+            </div>
+
+            <div class="description">
+                <strong>剩餘參數的優點：</strong><br>
+                • 比 arguments 更直觀<br>
+                • 結果是真實的數組<br>
+                • 支持箭頭函數<br>
+                • 易於解構使用
+            </div>
+        </section>
+
+        <!-- ==================== 對象字面量增強 ==================== -->
+        <section>
+            <h2>🏠 對象字面量增強 (Enhanced Object Literals)</h2>
+
+            <h3>屬性簡寫和方法簡寫</h3>
+            <div class="demo-box">
+                <button onclick="demoObjectLiteral()">執行示範</button>
+                <div class="demo-output" id="object-literal-output"></div>
+            </div>
+
+            <div class="code-block">
+const name = "Alice";
+const age = 25;
+
+// ❌ 舊方式
+const person1 = {
+    name: name,
+    age: age,
+    greet: function() {
+        return `Hello, I'm ${this.name}`;
+    }
+};
+
+// ✅ 新方式
+const person2 = {
+    name,  // 屬性簡寫
+    age,
+    greet() {  // 方法簡寫
+        return `Hello, I'm ${this.name}`;
+    },
+    // 計算屬性名
+    [name + "Key"]: "value",
+    // getter 和 setter
+    get fullInfo() {
+        return `${this.name}, ${this.age}`;
+    },
+    set fullInfo(value) {
+        [this.name, this.age] = value.split(", ");
+    }
+};
+            </div>
+
+            <div class="code-block">
+// 計算屬性名應用
+const prefix = "user_";
+const obj = {
+    [prefix + "id"]: 1,
+    [prefix + "name"]: "Alice",
+    [prefix + "email"]: "alice@example.com"
+};
+// { user_id: 1, user_name: "Alice", user_email: "alice@example.com" }
+
+// Getter 和 Setter
+const person = {
+    _name: "Alice",
+    get name() {
+        return this._name.toUpperCase();
+    },
+    set name(value) {
+        this._name = value;
+    }
+};
+console.log(person.name); // ALICE
+person.name = "Bob"; // 使用 setter
+            </div>
+        </section>
+
+        <!-- ==================== 類 (Classes) ==================== -->
+        <section>
+            <h2>🏛️ 類 (Classes)</h2>
+
+            <h3>基本類的定義</h3>
+            <div class="demo-box">
+                <button onclick="demoClass()">執行示範</button>
+                <div class="demo-output" id="class-output"></div>
+            </div>
+
+            <div class="code-block">
+// ✅ 類語法
+class Animal {
+    constructor(name) {
+        this.name = name;
+    }
+
+    speak() {
+        return `${this.name} makes a sound`;
+    }
+
+    static info() {
+        return "This is an Animal class";
+    }
+}
+
+// 繼承
+class Dog extends Animal {
+    constructor(name, breed) {
+        super(name); // 呼叫父類構造函數
+        this.breed = breed;
+    }
+
+    speak() {
+        return `${this.name} barks`;
+    }
+
+    // Getter
+    get description() {
+        return `${this.name} is a ${this.breed}`;
+    }
+
+    // Setter
+    set breed(value) {
+        this._breed = value.toUpperCase();
+    }
+
+    get breed() {
+        return this._breed;
+    }
+}
+
+const dog = new Dog("Max", "Golden Retriever");
+console.log(dog.speak()); // Max barks
+console.log(dog.description); // Max is a GOLDEN RETRIEVER
+            </div>
+
+            <h3>私有字段</h3>
+            <div class="demo-box">
+                <button onclick="demoPrivateFields()">執行示範</button>
+                <div class="demo-output" id="private-fields-output"></div>
+            </div>
+
+            <div class="code-block">
+class BankAccount {
+    #balance = 0; // 私有字段
+
+    constructor(initialBalance) {
+        this.#balance = initialBalance;
+    }
+
+    deposit(amount) {
+        this.#balance += amount;
+    }
+
+    #calculateFee() { // 私有方法
+        return this.#balance * 0.01;
+    }
+
+    getBalance() {
+        return this.#balance; // 可以讀取私有字段
+    }
+}
+
+const account = new BankAccount(1000);
+account.deposit(500);
+console.log(account.getBalance()); // 1500
+// account.#balance; // ❌ 錯誤！無法訪問私有字段
+            </div>
+
+            <div class="description">
+                <strong>類的優點：</strong><br>
+                • 語法更清晰<br>
+                • 支持繼承和 super<br>
+                • 支持靜態方法<br>
+                • 支持 getter/setter<br>
+                • 支持私有字段 #
+            </div>
+        </section>
+
+        <!-- ==================== Promise 和 async/await ==================== -->
+        <section>
+            <h2>⏳ Promise 和 Async/Await</h2>
+
+            <h3>Promise 基本用法</h3>
+            <div class="demo-box">
+                <button onclick="demoPromise()">執行示範</button>
+                <div class="demo-output" id="promise-output"></div>
+            </div>
+
+            <div class="code-block">
+// 建立 Promise
+const promise = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        resolve("成功！");
+    }, 2000);
+});
+
+// 使用 Promise
+promise
+    .then(result => console.log(result))
+    .catch(error => console.error(error))
+    .finally(() => console.log("完成"));
+
+// Promise.all - 等待所有 Promise 完成
+Promise.all([promise1, promise2, promise3])
+    .then(results => console.log("全部完成", results));
+
+// Promise.race - 等待第一個 Promise 完成
+Promise.race([promise1, promise2])
+    .then(result => console.log("第一個完成", result));
+            </div>
+
+            <h3>Async/Await (推薦)</h3>
+            <div class="demo-box">
+                <button onclick="demoAsyncAwait()">執行示範</button>
+                <div class="demo-output" id="async-await-output"></div>
+            </div>
+
+            <div class="code-block">
+// ✅ 現代方式 - async/await
+async function fetchData() {
+    try {
+        const response = await fetch('https://api.example.com/data');
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("獲取失敗:", error);
+    } finally {
+        console.log("請求完成");
+    }
+}
+
+// 使用
+const result = await fetchData();
+
+// 並行執行多個 async 操作
+async function getMultipleData() {
+    const [data1, data2, data3] = await Promise.all([
+        fetch('/api/data1').then(r => r.json()),
+        fetch('/api/data2').then(r => r.json()),
+        fetch('/api/data3').then(r => r.json())
+    ]);
+    return { data1, data2, data3 };
+}
+            </div>
+
+            <div class="description">
+                <strong>Async/Await 的優點：</strong><br>
+                • 代碼看起來同步，易於理解<br>
+                • 更好的錯誤處理<br>
+                • 支持 try/catch<br>
+                • 避免回調地獄（Callback Hell）
+            </div>
+        </section>
+
+        <!-- ==================== 模組化 ==================== -->
+        <section>
+            <h2>📚 模組化 (ES6 Modules)</h2>
+
+            <h3>導出和導入</h3>
+            <div class="demo-box">
+                <button onclick="demoModules()">查看範例</button>
+                <div class="demo-output" id="modules-output"></div>
+            </div>
+
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>math.js (導出)</h4>
+                    <div class="code-block">
+// 命名導出
+export const add = (a, b) => a + b;
+export const subtract = (a, b) => a - b;
+
+export function multiply(a, b) {
+    return a * b;
+}
+
+// 默認導出 (每個模組只能一個)
+export default class Calculator {
+    constructor() {}
+}
+                    </div>
+                </div>
+                <div class="comparison-box">
+                    <h4>main.js (導入)</h4>
+                    <div class="code-block">
+// 導入命名導出
+import { add, subtract } from './math.js';
+
+// 導入所有
+import * as Math from './math.js';
+
+// 導入默認導出
+import Calculator from './math.js';
+
+// 混合導入
+import Calculator, { add } from './math.js';
+
+// 重命名
+import { add as addition } from './math.js';
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-block">
+// HTML 中使用
+&lt;script type="module"&gt;
+    import { add } from './math.js';
+    console.log(add(5, 3)); // 8
+&lt;/script&gt;
+            </div>
+
+            <div class="description">
+                <strong>模組化的優點：</strong><br>
+                • 代碼組織清晰<br>
+                • 避免全局污染<br>
+                • 易於維護和測試<br>
+                • 支持動態導入
+            </div>
+        </section>
+
+        <!-- ==================== 進階特性 ==================== -->
+        <section>
+            <h2>🌟 進階特性</h2>
+
+            <h3>可選鏈 (Optional Chaining) ?.</h3>
+            <div class="demo-box">
+                <button onclick="demoOptionalChaining()">執行示範</button>
+                <div class="demo-output" id="optional-chaining-output"></div>
+            </div>
+
+            <div class="code-block">
+// ❌ 舊方式
+if (user && user.address && user.address.city) {
+    console.log(user.address.city);
+}
+
+// ✅ 新方式
+console.log(user?.address?.city); // 如果任何一個為 null/undefined，返回 undefined
+
+// 方法調用
+user?.sayHello?.(); // 如果方法存在才調用
+
+// 數組下標
+arr?.[0]; // 安全地訪問數組元素
+            </div>
+
+            <h3>空值合併 (Nullish Coalescing) ??</h3>
+            <div class="demo-box">
+                <button onclick="demoNullishCoalescing()">執行示範</button>
+                <div class="demo-output" id="nullish-coalescing-output"></div>
+            </div>
+
+            <div class="code-block">
+// ❌ || 會將 false, 0, "" 也視為假
+const config = {
+    timeout: 0,
+    retries: false
+};
+const timeout = config.timeout || 5000; // 5000 (不對！)
+
+// ✅ ?? 只把 null 和 undefined 視為無效
+const timeout = config.timeout ?? 5000; // 0 (正確)
+const retries = config.retries ?? 3; // false (正確)
+            </div>
+
+            <h3>邏輯賦值運算符</h3>
+            <div class="demo-box">
+                <button onclick="demoLogicalAssignment()">執行示範</button>
+                <div class="demo-output" id="logical-assignment-output"></div>
+            </div>
+
+            <div class="code-block">
+// &&= (邏輯 AND 賦值)
+let a = 5;
+a &&= 10; // 如果 a 為真，才賦值為 10
+
+// ||= (邏輯 OR 賦值)
+let b;
+b ||= 20; // 如果 b 為假，才賦值為 20
+
+// ??= (空值合併賦值)
+let c;
+c ??= 30; // 如果 c 為 null/undefined，才賦值為 30
+            </div>
+        </section>
+
+        <!-- ==================== 實踐範例 ==================== -->
+        <section>
+            <h2>💻 實踐範例：待辦事項應用</h2>
+
+            <div class="demo-box">
+                <input type="text" class="demo-input" id="todo-input" placeholder="輸入新任務...">
+                <button onclick="addNewTodo()" class="btn-success">添加</button>
+                <ul id="todo-list" style="list-style: none; padding: 0; margin-top: 15px;"></ul>
+                <div class="demo-output" id="todo-output"></div>
+            </div>
+
+            <div class="code-block">
+// 使用 ES6+ 特性構建的應用
+class TodoApp {
+    constructor() {
+        this.todos = [];
+        this.nextId = 1;
+    }
+
+    addTodo(text) {
+        const todo = {
+            id: this.nextId++,
+            text,
+            completed: false,
+            createdAt: new Date()
+        };
+        this.todos.push(todo);
+        this.render();
+    }
+
+    removeTodo(id) {
+        this.todos = this.todos.filter(t => t.id !== id);
+        this.render();
+    }
+
+    toggleTodo(id) {
+        const todo = this.todos.find(t => t.id === id);
+        if (todo) {
+            todo.completed = !todo.completed;
+            this.render();
+        }
+    }
+
+    render() {
+        const list = document.getElementById('todo-list');
+        list.innerHTML = this.todos
+            .map(({ id, text, completed }) => `
+                &lt;li style="padding: 10px; background: #f5f5f5; margin: 5px 0; border-radius: 5px; display: flex; justify-content: space-between; align-items: center;"&gt;
+                    &lt;input type="checkbox" ${completed ? 'checked' : ''} onchange="app.toggleTodo(${id})" style="margin-right: 10px;"&gt;
+                    &lt;span style="text-decoration: ${completed ? 'line-through' : 'none'};"&gt;${text}&lt;/span&gt;
+                    &lt;button onclick="app.removeTodo(${id})" style="padding: 5px 10px; background: #f5576c; color: white; border: none; border-radius: 3px; cursor: pointer;"&gt;刪除&lt;/button&gt;
+                &lt;/li&gt;
+            `)
+            .join('');
+    }
+}
+
+const app = new TodoApp();
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>JavaScript ES6+ 學習教程 | 2026</p>
+        <p>掌握現代 JavaScript，成為更優秀的開發者 ✨</p>
+    </footer>
+
+    <script>
+        // ==================== let 和 const ====================
+        function demoLetConst() {
+            let output = "let 和 const 演示\n";
+            output += "==================\n\n";
+
+            // 塊作用域
+            {
+                let x = 10;
+                const y = 20;
+                output += "塊作用域內:\n";
+                output += `x = ${x}, y = ${y}\n`;
+            }
+            // console.log(x); // ReferenceError
+            output += "塊外無法訪問 x 和 y (塊作用域)\n\n";
+
+            // const 的靈活性
+            const obj = { name: "Alice" };
+            obj.name = "Bob"; // 可以修改屬性
+            output += `const obj.name = "${obj.name}" (可以修改屬性)\n`;
+            // obj = {}; // TypeError: 不能重新賦值
+
+            output += "\n最佳實踐:\n";
+            output += "✓ 優先使用 const\n";
+            output += "✓ 需要重新賦值時用 let\n";
+            output += "✗ 避免使用 var";
+
+            document.getElementById('letconst-output').textContent = output;
+        }
+
+        // ==================== 模板字符串 ====================
+        function demoTemplateString() {
+            const name = "Alice";
+            const age = 25;
+            
+            let output = "模板字符串演示\n";
+            output += "==================\n\n";
+            
+            output += `Hello, ${name}!\n`;
+            output += `Age: ${age}\n`;
+            output += `Next year: ${age + 1}\n`;
+            output += `Expression: ${5 + 3} = 8\n`;
+            
+            document.getElementById('template-output').textContent = output;
+        }
+
+        function demoMultilineString() {
+            let output = "多行字符串演示\n";
+            output += "==================\n\n";
+            
+            const html = `
+            <div>
+                <h1>標題</h1>
+                <p>這是多行字符串</p>
+            </div>
+            `;
+            
+            output += "HTML:\n" + html;
+            document.getElementById('multiline-output').textContent = output;
+        }
+
+        // ==================== 箭頭函數 ====================
+        function demoArrowFunction() {
+            let output = "箭頭函數演示\n";
+            output += "==================\n\n";
+
+            // 基本箭頭函數
+            const add = (a, b) => a + b;
+            output += `add(5, 3) = ${add(5, 3)}\n`;
+
+            // 單個參數
+            const square = x => x * x;
+            output += `square(4) = ${square(4)}\n`;
+
+            // 無參數
+            const getRandom = () => Math.floor(Math.random() * 100);
+            output += `getRandom() = ${getRandom()}\n`;
+
+            // 多行箭頭函數
+            const multiply = (a, b) => {
+                const result = a * b;
+                return result;
+            };
+            output += `multiply(3, 4) = ${multiply(3, 4)}\n`;
+
+            document.getElementById('arrow-output').textContent = output;
+        }
+
+        function demoThisBinding() {
+            let output = "this 綁定演示\n";
+            output += "==================\n\n";
+
+            const person = {
+                name: "Alice",
+                greet: function() {
+                    return `普通函數: Hello, ${this.name}`;
+                },
+                greetArrow: () => {
+                    return `箭頭函數: this 無法綁定`;
+                }
+            };
+
+            output += person.greet() + "\n";
+            output += person.greetArrow() + "\n\n";
+            output += "注意: 箭頭函數的 this 繼承外層作用域";
+
+            document.getElementById('this-output').textContent = output;
+        }
+
+        // ==================== 解構賦值 ====================
+        function demoArrayDestructuring() {
+            let output = "數組解構演示\n";
+            output += "==================\n\n";
+
+            const [first, second, third] = [1, 2, 3];
+            output += `[first, second, third] = [1, 2, 3]\n`;
+            output += `first = ${first}, second = ${second}, third = ${third}\n\n`;
+
+            const [a, , c] = [10, 20, 30];
+            output += `[a, , c] = [10, 20, 30] (跳過中間)\n`;
+            output += `a = ${a}, c = ${c}\n\n`;
+
+            const [head, ...rest] = [1, 2, 3, 4, 5];
+            output += `[head, ...rest] = [1, 2, 3, 4, 5]\n`;
+            output += `head = ${head}, rest = [${rest.join(', ')}]`;
+
+            document.getElementById('array-destruct-output').textContent = output;
+        }
+
+        function demoObjectDestructuring() {
+            let output = "物件解構演示\n";
+            output += "==================\n\n";
+
+            const person = { name: "Alice", age: 25, city: "NYC" };
+            const { name, age } = person;
+            output += `const { name, age } = person\n`;
+            output += `name = "${name}", age = ${age}\n\n`;
+
+            const { name: personName, city = "Unknown" } = person;
+            output += `const { name: personName, city = "Unknown" } = person\n`;
+            output += `personName = "${personName}", city = "${city}"`;
+
+            document.getElementById('object-destruct-output').textContent = output;
+        }
+
+        // ==================== 擴展運算符 ====================
+        function demoSpreadArray() {
+            let output = "數組擴展運算符演示\n";
+            output += "==================\n\n";
+
+            const arr1 = [1, 2, 3];
+            const arr2 = [...arr1];
+            output += `const arr1 = [1, 2, 3];\n`;
+            output += `const arr2 = [...arr1]; // [${arr2.join(', ')}]\n\n`;
+
+            const combined = [...arr1, 4, 5];
+            output += `const combined = [...arr1, 4, 5];\n`;
+            output += `combined = [${combined.join(', ')}]\n\n`;
+
+            const merged = [...[1, 2], ...[3, 4]];
+            output += `const merged = [...[1, 2], ...[3, 4]];\n`;
+            output += `merged = [${merged.join(', ')}]`;
+
+            document.getElementById('spread-array-output').textContent = output;
+        }
+
+        function demoSpreadObject() {
+            let output = "物件擴展運算符演示\n";
+            output += "==================\n\n";
+
+            const obj1 = { a: 1, b: 2 };
+            const obj2 = { ...obj1 };
+            output += `const obj1 = { a: 1, b: 2 };\n`;
+            output += `const obj2 = { ...obj1 }; // { a: ${obj2.a}, b: ${obj2.b} }\n\n`;
+
+            const merged = { ...obj1, c: 3 };
+            output += `const merged = { ...obj1, c: 3 };\n`;
+            output += `merged = { a: ${merged.a}, b: ${merged.b}, c: ${merged.c} }\n\n`;
+
+            const updated = { ...obj1, a: 99 };
+            output += `const updated = { ...obj1, a: 99 };\n`;
+            output += `updated = { a: ${updated.a}, b: ${updated.b} }`;
+
+            document.getElementById('spread-object-output').textContent = output;
+        }
+
+        // ==================== 默認參數 ====================
+        function demoDefaultParams() {
+            let output = "默認參數演示\n";
+            output += "==================\n\n";
+
+            const greet = (name = "Guest") => `Hello, ${name}!`;
+            output += `const greet = (name = "Guest") => \`Hello, \${name}!\`\n\n`;
+            output += `greet() = "${greet()}"\n`;
+            output += `greet("Alice") = "${greet("Alice")}"\n\n`;
+
+            const createId = (prefix = "ID_") => prefix + Date.now();
+            output += `const createId = (prefix = "ID_") => prefix + Date.now()\n`;
+            output += `createId() = "${createId()}"\n`;
+            output += `createId("USER_") = "${createId("USER_")}"`;
+
+            document.getElementById('default-params-output').textContent = output;
+        }
+
+        // ==================== 剩餘參數 ====================
+        function demoRestParams() {
+            let output = "剩餘參數演示\n";
+            output += "==================\n\n";
+
+            const sum = (...numbers) => numbers.reduce((a, b) => a + b, 0);
+            output += `const sum = (...numbers) => numbers.reduce((a, b) => a + b, 0)\n\n`;
+            output += `sum(1, 2, 3, 4, 5) = ${sum(1, 2, 3, 4, 5)}\n\n`;
+
+            const greetMany = (greeting, ...names) => greeting + " " + names.join(", ");
+            output += `const greetMany = (greeting, ...names) => greeting + " " + names.join(", ")\n`;
+            output += `greetMany("Hello", "Alice", "Bob") = "${greetMany("Hello", "Alice", "Bob")}"`;
+
+            document.getElementById('rest-params-output').textContent = output;
+        }
+
+        // ==================== 對象字面量增強 ====================
+        function demoObjectLiteral() {
+            let output = "對象字面量增強演示\n";
+            output += "==================\n\n";
+
+            const name = "Alice";
+            const age = 25;
+
+            const person = {
+                name,
+                age,
+                greet() {
+                    return `Hello, I'm ${this.name}`;
+                }
+            };
+
+            output += `const person = {\n`;
+            output += `    name,\n`;
+            output += `    age,\n`;
+            output += `    greet() { ... }\n`;
+            output += `}\n\n`;
+            output += `person.name = "${person.name}"\n`;
+            output += `person.age = ${person.age}\n`;
+            output += `person.greet() = "${person.greet()}"`;
+
+            document.getElementById('object-literal-output').textContent = output;
+        }
+
+        // ==================== 類 ====================
+        function demoClass() {
+            let output = "類演示\n";
+            output += "==================\n\n";
+
+            class Animal {
+                constructor(name) {
+                    this.name = name;
+                }
+                speak() {
+                    return `${this.name} makes a sound`;
+                }
+            }
+
+            class Dog extends Animal {
+                constructor(name, breed) {
+                    super(name);
+                    this.breed = breed;
+                }
+                speak() {
+                    return `${this.name} barks`;
+                }
+            }
+
+            const dog = new Dog("Max", "Golden Retriever");
+            output += `class Dog extends Animal { ... }\n`;
+            output += `const dog = new Dog("Max", "Golden Retriever")\n\n`;
+            output += `dog.name = "${dog.name}"\n`;
+            output += `dog.breed = "${dog.breed}"\n`;
+            output += `dog.speak() = "${dog.speak()}"`;
+
+            document.getElementById('class-output').textContent = output;
+        }
+
+        function demoPrivateFields() {
+            let output = "私有字段演示\n";
+            output += "==================\n\n";
+
+            class BankAccount {
+                #balance = 0;
+
+                constructor(initialBalance) {
+                    this.#balance = initialBalance;
+                }
+
+                deposit(amount) {
+                    this.#balance += amount;
+                }
+
+                getBalance() {
+                    return this.#balance;
+                }
+            }
+
+            const account = new BankAccount(1000);
+            account.deposit(500);
+            
+            output += `class BankAccount {\n`;
+            output += `    #balance = 0; // 私有字段\n`;
+            output += `}\n\n`;
+            output += `account.getBalance() = ${account.getBalance()}\n\n`;
+            output += `注意: 無法直接訪問 account.#balance`;
+
+            document.getElementById('private-fields-output').textContent = output;
+        }
+
+        // ==================== Promise 和 Async/Await ====================
+        function demoPromise() {
+            let output = "Promise 演示\n";
+            output += "==================\n\n";
+
+            output += "建立 Promise\n";
+            const promise = new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    resolve("完成！");
+                }, 1000);
+            });
+
+            promise.then(result => {
+                output += `結果: ${result}`;
+                document.getElementById('promise-output').textContent = output;
+            });
+
+            output += "等待 1 秒...";
+            document.getElementById('promise-output').textContent = output;
+        }
+
+        async function demoAsyncAwait() {
+            let output = "Async/Await 演示\n";
+            output += "==================\n\n";
+
+            const fetchSimulated = () => new Promise(resolve => 
+                setTimeout(() => resolve({ data: "API 數據" }), 1000)
+            );
+
+            try {
+                output += "正在獲取數據...\n";
+                document.getElementById('async-await-output').textContent = output;
+
+                const response = await fetchSimulated();
+                output += `獲取成功: ${response.data}\n`;
+                document.getElementById('async-await-output').textContent = output;
+            } catch (error) {
+                output += `錯誤: ${error.message}`;
+                document.getElementById('async-await-output').textContent = output;
+            }
+        }
+
+        // ==================== 模組化 ====================
+        function demoModules() {
+            let output = "模組化演示\n";
+            output += "==================\n\n";
+
+            output += "export 示範 (math.js):\n";
+            output += "export const add = (a, b) => a + b;\n";
+            output += "export default class Calculator { }\n\n";
+
+            output += "import 示範 (main.js):\n";
+            output += "import { add } from './math.js';\n";
+            output += "import Calculator from './math.js';\n\n";
+
+            output += "優點:\n";
+            output += "✓ 代碼組織清晰\n";
+            output += "✓ 避免全局污染\n";
+            output += "✓ 易於維護和測試";
+
+            document.getElementById('modules-output').textContent = output;
+        }
+
+        // ==================== 進階特性 ====================
+        function demoOptionalChaining() {
+            let output = "可選鏈 ?. 演示\n";
+            output += "==================\n\n";
+
+            const user = {
+                name: "Alice",
+                address: {
+                    city: "NYC"
+                }
+            };
+
+            const emptyUser = null;
+
+            output += `user?.name = "${user?.name}"\n`;
+            output += `user?.address?.city = "${user?.address?.city}"\n`;
+            output += `emptyUser?.name = ${emptyUser?.name}\n\n`;
+
+            output += "優點:\n";
+            output += "✓ 避免 TypeError\n";
+            output += "✓ 代碼更簡潔\n";
+            output += "✓ 適合深層嵌套";
+
+            document.getElementById('optional-chaining-output').textContent = output;
+        }
+
+        function demoNullishCoalescing() {
+            let output = "空值合併 ?? 演示\n";
+            output += "==================\n\n";
+
+            const config = {
+                timeout: 0,
+                retries: false
+            };
+
+            output += `config.timeout = 0\n`;
+            output += `config.timeout || 5000 = ${config.timeout || 5000} (不對！)\n`;
+            output += `config.timeout ?? 5000 = ${config.timeout ?? 5000} (正確！)\n\n`;
+
+            output += `config.retries = false\n`;
+            output += `config.retries || 3 = ${config.retries || 3} (不對！)\n`;
+            output += `config.retries ?? 3 = ${config.retries ?? 3} (正確！)`;
+
+            document.getElementById('nullish-coalescing-output').textContent = output;
+        }
+
+        function demoLogicalAssignment() {
+            let output = "邏輯賦值運算符演示\n";
+            output += "==================\n\n";
+
+            let a = 5;
+            a &&= 10;
+            output += `let a = 5; a &&= 10; // a = ${a}\n\n`;
+
+            let b;
+            b ||= 20;
+            output += `let b; b ||= 20; // b = ${b}\n\n`;
+
+            let c;
+            c ??= 30;
+            output += `let c; c ??= 30; // c = ${c}`;
+
+            document.getElementById('logical-assignment-output').textContent = output;
+        }
+
+        // ==================== 待辦事項應用 ====================
+        class TodoApp {
+            constructor() {
+                this.todos = [];
+                this.nextId = 1;
+            }
+
+            addTodo(text) {
+                if (text.trim()) {
+                    this.todos.push({
+                        id: this.nextId++,
+                        text,
+                        completed: false
+                    });
+                    this.render();
+                }
+            }
+
+            removeTodo(id) {
+                this.todos = this.todos.filter(t => t.id !== id);
+                this.render();
+            }
+
+            toggleTodo(id) {
+                const todo = this.todos.find(t => t.id === id);
+                if (todo) {
+                    todo.completed = !todo.completed;
+                    this.render();
+                }
+            }
+
+            render() {
+                const list = document.getElementById('todo-list');
+                list.innerHTML = this.todos.map(({ id, text, completed }) => `
+                    <li style="padding: 10px; background: #f5f5f5; margin: 5px 0; border-radius: 5px; display: flex; justify-content: space-between; align-items: center;">
+                        <input type="checkbox" ${completed ? 'checked' : ''} onchange="app.toggleTodo(${id})" style="margin-right: 10px;">
+                        <span style="flex: 1; text-decoration: ${completed ? 'line-through' : 'none'};">${text}</span>
+                        <button onclick="app.removeTodo(${id})" style="padding: 5px 10px; background: #f5576c; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 12px;">刪除</button>
+                    </li>
+                `).join('');
+            }
+        }
+
+        const app = new TodoApp();
+
+        function addNewTodo() {
+            const input = document.getElementById('todo-input');
+            app.addTodo(input.value);
+            input.value = '';
+            input.focus();
+        }
+
+        // 回車鍵添加任務
+        document.getElementById('todo-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                addNewTodo();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Layout 示範</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', '微軟正黑體', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 36px;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 16px;
+        }
+
+        section {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        section h2 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 24px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        /* ==================== Flexbox Layout ==================== */
+        .flexbox-demo {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .flex-item {
+            flex: 1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .flex-direction-row {
+            display: flex;
+            flex-direction: row;
+            gap: 15px;
+        }
+
+        .flex-direction-column {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .flex-justify-center {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .flex-align-center {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            height: 150px;
+        }
+
+        .flex-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .flex-wrap-item {
+            flex: 0 0 calc(33.333% - 10px);
+            background: #4ecdc4;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        /* ==================== Grid Layout ==================== */
+        .grid-demo {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .grid-2-columns {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .grid-3-columns {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        .grid-auto-fit {
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        }
+
+        .grid-item {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 30px 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        /* ==================== Position Layout ==================== */
+        .position-demo {
+            position: relative;
+            height: 300px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 2px dashed #ccc;
+        }
+
+        .position-item {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .position-static {
+            position: static;
+            background: #90ee90;
+        }
+
+        .position-relative {
+            position: relative;
+            top: 20px;
+            left: 20px;
+            background: #87ceeb;
+        }
+
+        .position-absolute {
+            position: absolute;
+            top: 50px;
+            right: 50px;
+            background: #ff6b6b;
+        }
+
+        .position-fixed-demo {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #ffd700;
+            color: #333;
+            padding: 15px 20px;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            font-size: 24px;
+            z-index: 1000;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .position-fixed-demo:hover {
+            transform: scale(1.1);
+        }
+
+        /* ==================== Float Layout ==================== */
+        .float-demo {
+            overflow: auto;
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .float-left {
+            float: left;
+            width: 200px;
+            background: #b19cd9;
+            color: white;
+            padding: 20px;
+            margin-right: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .float-right {
+            float: right;
+            width: 200px;
+            background: #87ceeb;
+            color: white;
+            padding: 20px;
+            margin-left: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        /* ==================== Multi-Column Layout ==================== */
+        .column-demo {
+            column-count: 3;
+            column-gap: 30px;
+            column-rule: 2px solid #667eea;
+            text-align: justify;
+        }
+
+        /* ==================== 程式碼示例 ==================== */
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            margin-top: 15px;
+            border-left: 4px solid #667eea;
+            line-height: 1.5;
+        }
+
+        /* ==================== 說明卡片 ==================== */
+        .description {
+            background: rgba(102, 126, 234, 0.1);
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* ==================== 響應式 ==================== */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 28px;
+            }
+
+            .flex-wrap-item {
+                flex: 0 0 calc(50% - 7.5px);
+            }
+
+            .grid-2-columns,
+            .grid-3-columns {
+                grid-template-columns: 1fr;
+            }
+
+            .column-demo {
+                column-count: 1;
+            }
+
+            .position-fixed-demo {
+                display: none;
+            }
+        }
+
+        footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            padding: 30px 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 CSS Layout 詳細示範</h1>
+        <p class="subtitle">掌握網頁佈局的各種方法</p>
+
+        <!-- Flexbox Layout -->
+        <section>
+            <h2>📦 Flexbox Layout (彈性佈局)</h2>
+            
+            <h3>基本 Flexbox</h3>
+            <div class="flexbox-demo">
+                <div class="flex-item">項目 1</div>
+                <div class="flex-item">項目 2</div>
+                <div class="flex-item">項目 3</div>
+            </div>
+
+            <h3>Flex Direction - Row</h3>
+            <div class="flex-direction-row">
+                <div class="flex-item" style="flex: 1;">左</div>
+                <div class="flex-item" style="flex: 2;">中</div>
+                <div class="flex-item" style="flex: 1;">右</div>
+            </div>
+
+            <h3>Justify Content - Center</h3>
+            <div class="flex-justify-center" style="background: #f0f0f0; padding: 20px; border-radius: 8px;">
+                <div class="flex-item" style="flex: 0 0 auto; width: 100px;">中心對齊</div>
+                <div class="flex-item" style="flex: 0 0 auto; width: 100px;">中心對齊</div>
+            </div>
+
+            <h3>Align Items - Center (垂直居中)</h3>
+            <div class="flex-align-center" style="background: #f0f0f0; padding: 20px; border-radius: 8px;">
+                <div class="flex-item" style="flex: 0 0 auto; width: 100px; height: auto;">居中</div>
+                <div class="flex-item" style="flex: 0 0 auto; width: 100px; height: auto;">居中</div>
+                <div class="flex-item" style="flex: 0 0 auto; width: 100px; height: auto;">居中</div>
+            </div>
+
+            <h3>Flex Wrap - 響應式多行</h3>
+            <div class="flex-wrap">
+                <div class="flex-wrap-item">項目 1</div>
+                <div class="flex-wrap-item">項目 2</div>
+                <div class="flex-wrap-item">項目 3</div>
+                <div class="flex-wrap-item">項目 4</div>
+                <div class="flex-wrap-item">項目 5</div>
+                <div class="flex-wrap-item">項目 6</div>
+            </div>
+
+            <div class="description">
+                <strong>Flexbox 常用屬性：</strong><br>
+                • display: flex; - 啟用彈性佈局<br>
+                • flex-direction: row | column; - 主軸方向<br>
+                • justify-content: center | space-between | space-around; - 主軸對齐<br>
+                • align-items: center | flex-start | flex-end; - 交叉軸對齐<br>
+                • gap: 20px; - 項目間距
+            </div>
+        </section>
+
+        <!-- Grid Layout -->
+        <section>
+            <h2>📊 Grid Layout (網格佈局)</h2>
+            
+            <h3>2 列網格</h3>
+            <div class="grid-demo grid-2-columns">
+                <div class="grid-item">1</div>
+                <div class="grid-item">2</div>
+                <div class="grid-item">3</div>
+                <div class="grid-item">4</div>
+            </div>
+
+            <h3>3 列網格</h3>
+            <div class="grid-demo grid-3-columns">
+                <div class="grid-item">1</div>
+                <div class="grid-item">2</div>
+                <div class="grid-item">3</div>
+                <div class="grid-item">4</div>
+                <div class="grid-item">5</div>
+                <div class="grid-item">6</div>
+            </div>
+
+            <h3>自適應網格 (Auto-Fit)</h3>
+            <div class="grid-demo grid-auto-fit">
+                <div class="grid-item">A</div>
+                <div class="grid-item">B</div>
+                <div class="grid-item">C</div>
+                <div class="grid-item">D</div>
+                <div class="grid-item">E</div>
+                <div class="grid-item">F</div>
+            </div>
+
+            <div class="description">
+                <strong>Grid 常用屬性：</strong><br>
+                • display: grid; - 啟用網格佈局<br>
+                • grid-template-columns: 1fr 1fr 1fr; - 列定義<br>
+                • grid-template-rows: 100px 100px; - 行定義<br>
+                • gap: 20px; - 間距<br>
+                • repeat(3, 1fr); - 重複模式<br>
+                • auto-fit | auto-fill; - 自適應列數
+            </div>
+        </section>
+
+        <!-- Position Layout -->
+        <section>
+            <h2>📍 Position Layout (定位佈局)</h2>
+            
+            <h3>Absolute, Relative, Static 定位</h3>
+            <div class="position-demo">
+                <div class="position-item position-absolute" style="top: 20px; left: 20px; background: #4ecdc4;">
+                    絕對定位
+                    <br>(top: 20px; left: 20px;)
+                </div>
+                <div class="position-item position-absolute" style="bottom: 20px; right: 20px; background: #95e1d3;">
+                    絕對定位
+                    <br>(bottom: 20px; right: 20px;)
+                </div>
+                <div style="padding: 20px; color: #666;">相對定位容器</div>
+            </div>
+
+            <div class="description">
+                <strong>Position 類型：</strong><br>
+                • static; - 預設流動佈局<br>
+                • relative; - 相對於原位置定位<br>
+                • absolute; - 相對於最近的定位父元素<br>
+                • fixed; - 相對於視窗固定<br>
+                • sticky; - 滾動時黏著
+            </div>
+        </section>
+
+        <!-- Float Layout -->
+        <section>
+            <h2>〰️ Float Layout (浮動佈局)</h2>
+            
+            <div class="float-demo">
+                <div class="float-left">
+                    <strong>浮動左側</strong><br>float: left;
+                </div>
+                <div class="float-right">
+                    <strong>浮動右側</strong><br>float: right;
+                </div>
+                <p>
+                    這是一個演示文本。當元素浮動時，其他內容會環繞它。Float 曾經是實現多列佈局的常見方法，
+                    但現在 Flexbox 和 Grid 是更好的選擇。Float 仍然用於讓文本環繞圖像等特殊場景。
+                </p>
+            </div>
+
+            <div class="description">
+                <strong>Float 使用場景：</strong><br>
+                • 文本環繞圖像<br>
+                • clear: both; - 清除浮動<br>
+                • overflow: auto; - 父容器包含浮動子元素
+            </div>
+        </section>
+
+        <!-- Multi-Column Layout -->
+        <section>
+            <h2>📰 Multi-Column Layout (多欄佈局)</h2>
+            
+            <div class="column-demo">
+                <p>
+                    CSS 多列佈局允許您輕鬆定義多列文本。這對於報紙或雜誌風格的佈局非常有用。
+                    文本會自動分流到各列，並且會自動平衡內容高度。您可以設定列數、列寬、列之間的間隙和列分隔線。
+                    當瀏覽器窗口改變大小時，列會自動調整。這是一個強大的功能，特別適合長形式的內容展示。
+                    多列佈局使用起來非常簡單，只需要設定幾個 CSS 屬性就可以實現複雜的版面設計。
+                </p>
+            </div>
+
+            <div class="description">
+                <strong>Multi-Column 屬性：</strong><br>
+                • column-count: 3; - 列數<br>
+                • column-width: 200px; - 列寬<br>
+                • column-gap: 30px; - 列間距<br>
+                • column-rule: 2px solid #ccc; - 列分隔線<br>
+                • column-span: all; - 跨越所有列
+            </div>
+        </section>
+
+        <!-- Practical Example -->
+        <section>
+            <h2>🏗️ 實踐例子：完整網頁佈局</h2>
+            
+            <div class="grid-demo grid-3-columns" style="margin-bottom: 20px;">
+                <div class="grid-item" style="grid-column: 1 / -1;">Header (全寬)</div>
+                <div class="grid-item">Sidebar</div>
+                <div class="grid-item" style="grid-column: 2 / -1;">Main Content</div>
+                <div class="grid-item" style="grid-column: 1 / -1;">Footer (全寬)</div>
+            </div>
+
+            <div class="code-block">
+&lt;div style="display: grid; grid-template-columns: 200px 1fr 200px; gap: 20px;"&gt;
+    &lt;header style="grid-column: 1 / -1;"&gt;Header&lt;/header&gt;
+    &lt;aside&gt;Sidebar&lt;/aside&gt;
+    &lt;main&gt;Main Content&lt;/main&gt;
+    &lt;aside&gt;Sidebar Right&lt;/aside&gt;
+    &lt;footer style="grid-column: 1 / -1;"&gt;Footer&lt;/footer&gt;
+&lt;/div&gt;
+            </div>
+        </section>
+    </div>
+
+    <div class="position-fixed-demo" title="返回頂部">⬆️</div>
+
+    <footer>
+        <p>CSS Layout 學習教程 | 2026</p>
+        <p>選擇正確的佈局方法是網頁設計的關鍵 ✨</p>
+    </footer>
+
+    <script>
+        // 返回頂部功能
+        document.querySelector('.position-fixed-demo').addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>

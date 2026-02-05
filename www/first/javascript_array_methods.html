@@ -1,0 +1,1633 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript 陣列處理方法示範</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', '微軟正黑體', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 36px;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 16px;
+        }
+
+        section {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        section h2 {
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 24px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #555;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        /* ==================== 按鈕樣式 ==================== */
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        /* ==================== 演示容器 ==================== */
+        .demo-box {
+            background: #f0f0f0;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .demo-output {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 10px;
+            min-height: 50px;
+            color: #333;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            line-height: 1.6;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            margin: 15px 0;
+            border-left: 4px solid #667eea;
+            line-height: 1.5;
+        }
+
+        .description {
+            background: rgba(102, 126, 234, 0.1);
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            color: #333;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 15px 0;
+        }
+
+        .comparison-box {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .comparison-box h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .comparison-box .code-block {
+            margin: 10px 0;
+            font-size: 12px;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #333;
+            font-size: 14px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .feature-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #11998e;
+            font-weight: bold;
+        }
+
+        .method-card {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+
+        .method-card h4 {
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+
+        .method-tag {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            margin-right: 5px;
+            margin-bottom: 8px;
+        }
+
+        .method-tag.mutate {
+            background: #f5576c;
+        }
+
+        .method-tag.immutable {
+            background: #11998e;
+        }
+
+        .demo-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+
+        .array-display {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 12px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            margin: 10px 0;
+            word-break: break-all;
+        }
+
+        /* ==================== 響應式 ==================== */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 28px;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            section {
+                padding: 20px;
+            }
+        }
+
+        footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            padding: 30px 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 JavaScript 陣列處理方法詳細示範</h1>
+        <p class="subtitle">掌握陣列操作的各種方法和應用</p>
+
+        <!-- ==================== 基礎陣列方法 ==================== -->
+        <section>
+            <h2>🔧 基礎陣列方法</h2>
+
+            <div class="method-card">
+                <h4>push() - 添加元素到陣列末尾</h4>
+                <span class="method-tag mutate">修改原陣列</span>
+                <button onclick="demoPush()">執行示範</button>
+                <div class="demo-output" id="push-output"></div>
+                <div class="code-block">
+const arr = [1, 2, 3];
+arr.push(4, 5); // 返回新長度 5
+console.log(arr); // [1, 2, 3, 4, 5]
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>pop() - 移除陣列末尾的元素</h4>
+                <span class="method-tag mutate">修改原陣列</span>
+                <button onclick="demoPop()">執行示範</button>
+                <div class="demo-output" id="pop-output"></div>
+                <div class="code-block">
+const arr = [1, 2, 3];
+const removed = arr.pop(); // 返回被移除的元素 3
+console.log(arr); // [1, 2]
+console.log(removed); // 3
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>shift() - 移除陣列開頭的元素</h4>
+                <span class="method-tag mutate">修改原陣列</span>
+                <button onclick="demoShift()">執行示範</button>
+                <div class="demo-output" id="shift-output"></div>
+                <div class="code-block">
+const arr = [1, 2, 3];
+const first = arr.shift(); // 返回 1
+console.log(arr); // [2, 3]
+console.log(first); // 1
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>unshift() - 添加元素到陣列開頭</h4>
+                <span class="method-tag mutate">修改原陣列</span>
+                <button onclick="demoUnshift()">執行示範</button>
+                <div class="demo-output" id="unshift-output"></div>
+                <div class="code-block">
+const arr = [2, 3];
+arr.unshift(0, 1); // 返回新長度 4
+console.log(arr); // [0, 1, 2, 3]
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>splice() - 刪除或替換元素</h4>
+                <span class="method-tag mutate">修改原陣列</span>
+                <button onclick="demoSplice()">執行示範</button>
+                <div class="demo-output" id="splice-output"></div>
+                <div class="code-block">
+const arr = [1, 2, 3, 4, 5];
+
+// 刪除 2 個元素，從索引 1 開始
+arr.splice(1, 2); // 返回 [2, 3]
+console.log(arr); // [1, 4, 5]
+
+// 插入元素
+arr.splice(1, 0, 'a', 'b'); // 在索引 1 插入
+console.log(arr); // [1, 'a', 'b', 4, 5]
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>slice() - 提取陣列片段 (不修改原陣列)</h4>
+                <span class="method-tag immutable">不修改原陣列</span>
+                <button onclick="demoSlice()">執行示範</button>
+                <div class="demo-output" id="slice-output"></div>
+                <div class="code-block">
+const arr = [1, 2, 3, 4, 5];
+
+// 提取索引 1 到 3 (不包括 3)
+const sliced = arr.slice(1, 3); // [2, 3]
+console.log(arr); // [1, 2, 3, 4, 5] (原陣列不變)
+
+// 複製整個陣列
+const copy = arr.slice(); // [1, 2, 3, 4, 5]
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>join() - 連接陣列元素成字符串</h4>
+                <span class="method-tag immutable">不修改原陣列</span>
+                <button onclick="demoJoin()">執行示範</button>
+                <div class="demo-output" id="join-output"></div>
+                <div class="code-block">
+const arr = ['Hello', 'World', 'JavaScript'];
+
+const result1 = arr.join(); // "Hello,World,JavaScript"
+const result2 = arr.join(' '); // "Hello World JavaScript"
+const result3 = arr.join('-'); // "Hello-World-JavaScript"
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>concat() - 合併陣列</h4>
+                <span class="method-tag immutable">不修改原陣列</span>
+                <button onclick="demoConcat()">執行示範</button>
+                <div class="demo-output" id="concat-output"></div>
+                <div class="code-block">
+const arr1 = [1, 2];
+const arr2 = [3, 4];
+const arr3 = [5, 6];
+
+const merged = arr1.concat(arr2, arr3);
+// [1, 2, 3, 4, 5, 6]
+
+// 原陣列保持不變
+console.log(arr1); // [1, 2]
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>indexOf() / lastIndexOf() - 查找元素位置</h4>
+                <span class="method-tag immutable">不修改原陣列</span>
+                <button onclick="demoIndexOf()">執行示範</button>
+                <div class="demo-output" id="indexOf-output"></div>
+                <div class="code-block">
+const arr = [1, 2, 3, 2, 1];
+
+console.log(arr.indexOf(2)); // 1 (第一個 2 的位置)
+console.log(arr.lastIndexOf(2)); // 3 (最後一個 2 的位置)
+console.log(arr.indexOf(5)); // -1 (不存在)
+
+// 檢查元素是否存在
+if (arr.indexOf(3) !== -1) {
+    console.log('元素存在');
+}
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>includes() - 檢查元素是否存在</h4>
+                <span class="method-tag immutable">不修改原陣列</span>
+                <button onclick="demoIncludes()">執行示範</button>
+                <div class="demo-output" id="includes-output"></div>
+                <div class="code-block">
+const arr = [1, 2, 3, NaN];
+
+console.log(arr.includes(2)); // true
+console.log(arr.includes(5)); // false
+console.log(arr.includes(NaN)); // true (比 indexOf 更好用)
+
+// 檢查選項
+if (arr.includes('3')) {
+    console.log('包含 "3"');
+}
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== 遍歷和查找方法 ==================== -->
+        <section>
+            <h2>🔍 遍歷和查找方法</h2>
+
+            <div class="method-card">
+                <h4>forEach() - 遍歷陣列</h4>
+                <span class="method-tag immutable">不修改原陣列</span>
+                <button onclick="demoForEach()">執行示範</button>
+                <div class="demo-output" id="forEach-output"></div>
+                <div class="code-block">
+const arr = ['a', 'b', 'c'];
+
+arr.forEach((item, index, array) => {
+    console.log(`${index}: ${item}`);
+});
+// 0: a
+// 1: b
+// 2: c
+
+// 無法 break 或 return
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>map() - 映射陣列元素</h4>
+                <span class="method-tag immutable">不修改原陣列</span>
+                <button onclick="demoMap()">執行示範</button>
+                <div class="demo-output" id="map-output"></div>
+                <div class="code-block">
+const numbers = [1, 2, 3, 4];
+
+// 轉換每個元素
+const doubled = numbers.map(x => x * 2);
+console.log(doubled); // [2, 4, 6, 8]
+
+// 提取物件屬性
+const users = [
+    { name: 'Alice', age: 25 },
+    { name: 'Bob', age: 30 }
+];
+const names = users.map(user => user.name);
+console.log(names); // ['Alice', 'Bob']
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>filter() - 過濾陣列元素</h4>
+                <span class="method-tag immutable">不修改原陣列</span>
+                <button onclick="demoFilter()">執行示範</button>
+                <div class="demo-output" id="filter-output"></div>
+                <div class="code-block">
+const numbers = [1, 2, 3, 4, 5, 6];
+
+// 過濾偶數
+const evens = numbers.filter(x => x % 2 === 0);
+console.log(evens); // [2, 4, 6]
+
+// 過濾物件陣列
+const users = [
+    { name: 'Alice', active: true },
+    { name: 'Bob', active: false },
+    { name: 'Carol', active: true }
+];
+const activeUsers = users.filter(u => u.active);
+// [{ name: 'Alice' }, { name: 'Carol' }]
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>find() - 查找第一個符合條件的元素</h4>
+                <span class="method-tag immutable">不修改原陣列</span>
+                <button onclick="demoFind()">執行示範</button>
+                <div class="demo-output" id="find-output"></div>
+                <div class="code-block">
+const users = [
+    { id: 1, name: 'Alice' },
+    { id: 2, name: 'Bob' },
+    { id: 3, name: 'Carol' }
+];
+
+// 查找特定用戶
+const user = users.find(u => u.id === 2);
+console.log(user); // { id: 2, name: 'Bob' }
+
+// 不存在則返回 undefined
+const notFound = users.find(u => u.id === 999);
+console.log(notFound); // undefined
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>findIndex() - 查找元素索引</h4>
+                <span class="method-tag immutable">不修改原陣列</span>
+                <button onclick="demoFindIndex()">執行示範</button>
+                <div class="demo-output" id="findIndex-output"></div>
+                <div class="code-block">
+const users = [
+    { id: 1, name: 'Alice' },
+    { id: 2, name: 'Bob' },
+    { id: 3, name: 'Carol' }
+];
+
+const index = users.findIndex(u => u.name === 'Bob');
+console.log(index); // 1
+
+const notFound = users.findIndex(u => u.id === 999);
+console.log(notFound); // -1
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>some() - 檢查是否有元素符合條件</h4>
+                <span class="method-tag immutable">不修改原陣列</span>
+                <button onclick="demoSome()">執行示範</button>
+                <div class="demo-output" id="some-output"></div>
+                <div class="code-block">
+const numbers = [1, 2, 3, 4, 5];
+
+// 檢查是否有大於 3 的數字
+const hasGreater = numbers.some(x => x > 3);
+console.log(hasGreater); // true
+
+// 檢查是否有負數
+const hasNegative = numbers.some(x => x < 0);
+console.log(hasNegative); // false
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>every() - 檢查所有元素是否符合條件</h4>
+                <span class="method-tag immutable">不修改原陣列</span>
+                <button onclick="demoEvery()">執行示範</button>
+                <div class="demo-output" id="every-output"></div>
+                <div class="code-block">
+const numbers = [2, 4, 6, 8];
+
+// 檢查所有數字是否為偶數
+const allEven = numbers.every(x => x % 2 === 0);
+console.log(allEven); // true
+
+const numbers2 = [1, 2, 3, 4];
+const allEven2 = numbers2.every(x => x % 2 === 0);
+console.log(allEven2); // false
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== 轉換和聚合方法 ==================== -->
+        <section>
+            <h2>🔄 轉換和聚合方法</h2>
+
+            <div class="method-card">
+                <h4>reduce() - 歸納陣列為單一值</h4>
+                <span class="method-tag immutable">不修改原陣列</span>
+                <button onclick="demoReduce()">執行示範</button>
+                <div class="demo-output" id="reduce-output"></div>
+                <div class="code-block">
+const numbers = [1, 2, 3, 4, 5];
+
+// 求和
+const sum = numbers.reduce((acc, curr) => acc + curr, 0);
+console.log(sum); // 15
+
+// 求乘積
+const product = numbers.reduce((acc, curr) => acc * curr, 1);
+console.log(product); // 120
+
+// 計數物件
+const arr = ['a', 'b', 'a', 'c', 'b', 'a'];
+const count = arr.reduce((acc, curr) => {
+    acc[curr] = (acc[curr] || 0) + 1;
+    return acc;
+}, {});
+console.log(count); // { a: 3, b: 2, c: 1 }
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>reduceRight() - 從右到左歸納</h4>
+                <span class="method-tag immutable">不修改原陣列</span>
+                <button onclick="demoReduceRight()">執行示範</button>
+                <div class="demo-output" id="reduceRight-output"></div>
+                <div class="code-block">
+const arr = [1, 2, 3, 4];
+
+// 從右到左相加
+const result = arr.reduceRight((acc, curr) => {
+    console.log(`${acc} + ${curr}`);
+    return acc + curr;
+}, 0);
+// 0 + 4, 4 + 3, 7 + 2, 9 + 1
+console.log(result); // 10
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>sort() - 排序陣列</h4>
+                <span class="method-tag mutate">修改原陣列</span>
+                <button onclick="demoSort()">執行示範</button>
+                <div class="demo-output" id="sort-output"></div>
+                <div class="code-block">
+// 字母排序
+const fruits = ['banana', 'apple', 'cherry'];
+fruits.sort();
+console.log(fruits); // ['apple', 'banana', 'cherry']
+
+// 數字排序 (重要：默認是字符串排序)
+const nums = [10, 5, 40, 25, 1000];
+nums.sort((a, b) => a - b); // 升序
+console.log(nums); // [5, 10, 25, 40, 1000]
+
+// 降序
+nums.sort((a, b) => b - a);
+console.log(nums); // [1000, 40, 25, 10, 5]
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>reverse() - 反轉陣列</h4>
+                <span class="method-tag mutate">修改原陣列</span>
+                <button onclick="demoReverse()">執行示範</button>
+                <div class="demo-output" id="reverse-output"></div>
+                <div class="code-block">
+const arr = [1, 2, 3, 4, 5];
+
+arr.reverse();
+console.log(arr); // [5, 4, 3, 2, 1]
+
+// 反轉字符串
+const str = "Hello";
+const reversed = str.split('').reverse().join('');
+console.log(reversed); // "olleH"
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>flat() - 扁平化多維陣列</h4>
+                <span class="method-tag immutable">不修改原陣列</span>
+                <button onclick="demoFlat()">執行示範</button>
+                <div class="demo-output" id="flat-output"></div>
+                <div class="code-block">
+const arr = [1, 2, [3, 4, [5, 6]]];
+
+// 扁平化一層
+const flat1 = arr.flat();
+console.log(flat1); // [1, 2, 3, 4, [5, 6]]
+
+// 扁平化所有層級
+const flatAll = arr.flat(Infinity);
+console.log(flatAll); // [1, 2, 3, 4, 5, 6]
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>flatMap() - map + flat</h4>
+                <span class="method-tag immutable">不修改原陣列</span>
+                <button onclick="demoFlatMap()">執行示範</button>
+                <div class="demo-output" id="flatMap-output"></div>
+                <div class="code-block">
+const arr = [1, 2, 3];
+
+// 等同於 map 後 flat(1)
+const result = arr.flatMap(x => [x, x * 2]);
+console.log(result); // [1, 2, 2, 4, 3, 6]
+
+// 用來去除空值
+const arr2 = [1, 2, null, 3, undefined, 4];
+const filtered = arr2.flatMap(x => x ? [x] : []);
+console.log(filtered); // [1, 2, 3, 4]
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== 建立和轉換 ==================== -->
+        <section>
+            <h2>✨ 建立和轉換方法</h2>
+
+            <div class="method-card">
+                <h4>Array.from() - 轉換為陣列</h4>
+                <span class="method-tag immutable">靜態方法</span>
+                <button onclick="demoArrayFrom()">執行示範</button>
+                <div class="demo-output" id="arrayFrom-output"></div>
+                <div class="code-block">
+// 轉換字符串
+const str = "Hello";
+const arr1 = Array.from(str);
+console.log(arr1); // ['H', 'e', 'l', 'l', 'o']
+
+// 轉換 NodeList
+const elements = document.querySelectorAll('p');
+const arr2 = Array.from(elements);
+
+// 轉換類數組對象
+const arrayLike = { 0: 'a', 1: 'b', length: 2 };
+const arr3 = Array.from(arrayLike);
+console.log(arr3); // ['a', 'b']
+
+// 使用映射函數
+const numbers = Array.from({ length: 3 }, (_, i) => i + 1);
+console.log(numbers); // [1, 2, 3]
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>Array.of() - 建立陣列</h4>
+                <span class="method-tag immutable">靜態方法</span>
+                <button onclick="demoArrayOf()">執行示範</button>
+                <div class="demo-output" id="arrayOf-output"></div>
+                <div class="code-block">
+// 建立包含單一元素 5 的陣列
+const arr1 = Array.of(5);
+console.log(arr1); // [5]
+
+// 而 Array(5) 會建立 5 個空元素的陣列
+const arr2 = Array(5);
+console.log(arr2); // [empty × 5]
+
+// Array.of 總是建立陣列
+const arr3 = Array.of(1, 2, 3);
+console.log(arr3); // [1, 2, 3]
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>fill() - 填充陣列元素</h4>
+                <span class="method-tag mutate">修改原陣列</span>
+                <button onclick="demoFill()">執行示範</button>
+                <div class="demo-output" id="fill-output"></div>
+                <div class="code-block">
+const arr = new Array(5);
+
+// 用 0 填充整個陣列
+arr.fill(0);
+console.log(arr); // [0, 0, 0, 0, 0]
+
+// 填充部分陣列
+const arr2 = [1, 2, 3, 4, 5];
+arr2.fill('x', 1, 3); // 從索引 1 到 3 (不包括 3)
+console.log(arr2); // [1, 'x', 'x', 4, 5]
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>copyWithin() - 陣列內複製</h4>
+                <span class="method-tag mutate">修改原陣列</span>
+                <button onclick="demoCopyWithin()">執行示範</button>
+                <div class="demo-output" id="copyWithin-output"></div>
+                <div class="code-block">
+const arr = [1, 2, 3, 4, 5];
+
+// 複製索引 3, 4 到索引 0, 1
+arr.copyWithin(0, 3, 5);
+console.log(arr); // [4, 5, 3, 4, 5]
+
+// 複製索引 0, 1 到索引 2
+const arr2 = [1, 2, 3, 4, 5];
+arr2.copyWithin(2, 0, 2);
+console.log(arr2); // [1, 2, 1, 2, 5]
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== 進階應用 ==================== -->
+        <section>
+            <h2>🌟 進階應用和組合</h2>
+
+            <h3>map 和 filter 組合</h3>
+            <div class="demo-box">
+                <button onclick="demoChaining()">執行示範</button>
+                <div class="demo-output" id="chaining-output"></div>
+            </div>
+
+            <div class="code-block">
+const products = [
+    { name: 'iPhone', price: 999, inStock: true },
+    { name: 'iPad', price: 599, inStock: false },
+    { name: 'Mac', price: 1999, inStock: true }
+];
+
+// 先過濾有貨的，再提取名稱和折扣價
+const inStockDiscounted = products
+    .filter(p => p.inStock)
+    .map(p => ({
+        name: p.name,
+        discountedPrice: p.price * 0.9
+    }));
+
+console.log(inStockDiscounted);
+// [
+//     { name: 'iPhone', discountedPrice: 899.1 },
+//     { name: 'Mac', discountedPrice: 1799.1 }
+// ]
+            </div>
+
+            <h3>使用 reduce 構建物件</h3>
+            <div class="demo-box">
+                <button onclick="demoReduceGroup()">執行示範</button>
+                <div class="demo-output" id="reduceGroup-output"></div>
+            </div>
+
+            <div class="code-block">
+const students = [
+    { name: 'Alice', grade: 'A', score: 90 },
+    { name: 'Bob', grade: 'B', score: 80 },
+    { name: 'Carol', grade: 'A', score: 92 }
+];
+
+// 按成績分組
+const byGrade = students.reduce((acc, student) => {
+    const grade = student.grade;
+    if (!acc[grade]) acc[grade] = [];
+    acc[grade].push(student);
+    return acc;
+}, {});
+
+console.log(byGrade);
+// {
+//     A: [{ name: 'Alice' }, { name: 'Carol' }],
+//     B: [{ name: 'Bob' }]
+// }
+            </div>
+
+            <h3>實踐：數據統計</h3>
+            <div class="demo-box">
+                <button onclick="demoDataStats()">執行示範</button>
+                <div class="demo-output" id="dataStats-output"></div>
+            </div>
+
+            <div class="code-block">
+const scores = [85, 92, 78, 95, 88, 76, 90];
+
+// 計算統計信息
+const stats = {
+    // 求和
+    sum: scores.reduce((a, b) => a + b, 0),
+    // 平均
+    average: scores.reduce((a, b) => a + b, 0) / scores.length,
+    // 最大值
+    max: Math.max(...scores),
+    // 最小值
+    min: Math.min(...scores),
+    // 及格人數 (>=60)
+    passed: scores.filter(s => s >= 60).length,
+    // 優秀人數 (>=90)
+    excellent: scores.filter(s => s >= 90).length
+};
+
+console.log(stats);
+// { sum: 604, average: 86.3, max: 95, min: 76, passed: 7, excellent: 2 }
+            </div>
+
+            <h3>實踐：數據轉換</h3>
+            <div class="demo-box">
+                <button onclick="demoDataTransform()">執行示範</button>
+                <div class="demo-output" id="dataTransform-output"></div>
+            </div>
+
+            <div class="code-block">
+const users = [
+    { id: 1, name: 'Alice', age: 25, dept: 'HR' },
+    { id: 2, name: 'Bob', age: 30, dept: 'IT' },
+    { id: 3, name: 'Carol', age: 28, dept: 'IT' }
+];
+
+// 轉換為 Map (方便查詢)
+const userMap = new Map(users.map(u => [u.id, u]));
+console.log(userMap.get(2)); // { id: 2, name: 'Bob' }
+
+// 分組統計
+const deptCount = users.reduce((acc, u) => {
+    acc[u.dept] = (acc[u.dept] || 0) + 1;
+    return acc;
+}, {});
+console.log(deptCount); // { HR: 1, IT: 2 }
+
+// 抽取特定字段
+const names = users.map(u => u.name);
+console.log(names); // ['Alice', 'Bob', 'Carol']
+            </div>
+        </section>
+
+        <!-- ==================== 性能和最佳實踐 ==================== -->
+        <section>
+            <h2>⚡ 性能和最佳實踐</h2>
+
+            <div class="description">
+                <strong>修改 vs 不修改原陣列：</strong><br>
+                • <strong>修改原陣列</strong>：push, pop, shift, unshift, splice, sort, reverse, fill, copyWithin<br>
+                • <strong>不修改原陣列</strong>：slice, concat, map, filter, find, reduce, flat, flatMap<br><br>
+                <strong>選擇建議：</strong><br>
+                • 如果不需要修改原陣列，使用不修改的方法<br>
+                • 避免意外修改，防止 bug<br>
+                • 函數式編程風格更易理解和維護
+            </div>
+
+            <h3>常見性能陷阱</h3>
+            <div class="demo-box">
+                <button onclick="demoPerformance()">執行示範</button>
+                <div class="demo-output" id="performance-output"></div>
+            </div>
+
+            <div class="code-block">
+// ❌ 低效：多次遍歷
+const nums = [1, 2, 3, 4, 5, 6];
+const result1 = nums
+    .filter(x => x > 2)
+    .map(x => x * 2)
+    .filter(x => x < 10);
+// 遍歷了 3 次
+
+// ✅ 高效：單次遍歷
+const result2 = nums.reduce((acc, x) => {
+    if (x > 2 && x * 2 < 10) {
+        acc.push(x * 2);
+    }
+    return acc;
+}, []);
+
+// ❌ 避免：在迴圈中修改長度
+for (let i = 0; i < arr.length; i++) {
+    if (someCondition) {
+        arr.splice(i, 1); // 會跳過元素
+    }
+}
+
+// ✅ 正確：
+const filtered = arr.filter(item => !someCondition);
+
+// ❌ 避免：forEach 不能中斷
+arr.forEach(x => {
+    if (x > 5) return; // 不會停止迴圈
+});
+
+// ✅ 應該：
+for (const x of arr) {
+    if (x > 5) break; // 正確停止
+}
+            </div>
+
+            <h3>方法選擇指南</h3>
+            <div class="demo-box">
+                <div style="padding: 15px;">
+                    <h4 style="color: #667eea; margin-bottom: 10px;">✅ 應該使用：</h4>
+                    <ul class="feature-list">
+                        <li>簡單遍歷用 forEach</li>
+                        <li>變換數據用 map</li>
+                        <li>過濾數據用 filter</li>
+                        <li>查找單個用 find</li>
+                        <li>聚合數據用 reduce</li>
+                        <li>鏈式操作充分利用</li>
+                    </ul>
+
+                    <h4 style="color: #f5576c; margin-bottom: 10px; margin-top: 20px;">❌ 避免：</h4>
+                    <ul class="feature-list" style="color: #f5576c;">
+                        <li>不必要地修改原陣列</li>
+                        <li>使用 var 宣告陣列</li>
+                        <li>假設 indexOf 總能找到</li>
+                        <li>忽視排序需要比較函數</li>
+                        <li>過度鏈式操作降低可讀性</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>JavaScript 陣列方法學習教程 | 2026</p>
+        <p>掌握陣列方法，高效處理數據 ✨</p>
+    </footer>
+
+    <script>
+        // ==================== 基礎方法 ====================
+        function demoPush() {
+            let output = "push() 示範\n";
+            output += "==================\n\n";
+            
+            const arr = [1, 2, 3];
+            output += "初始: [1, 2, 3]\n";
+            
+            const result = arr.push(4, 5);
+            output += `arr.push(4, 5) 返回: ${result}\n`;
+            output += `結果: [${arr.join(', ')}]\n`;
+            
+            document.getElementById('push-output').textContent = output;
+        }
+
+        function demoPop() {
+            let output = "pop() 示範\n";
+            output += "==================\n\n";
+            
+            const arr = [1, 2, 3];
+            output += "初始: [1, 2, 3]\n";
+            
+            const removed = arr.pop();
+            output += `removed = arr.pop() 返回: ${removed}\n`;
+            output += `結果: [${arr.join(', ')}]\n`;
+            
+            document.getElementById('pop-output').textContent = output;
+        }
+
+        function demoShift() {
+            let output = "shift() 示範\n";
+            output += "==================\n\n";
+            
+            const arr = [1, 2, 3];
+            output += "初始: [1, 2, 3]\n";
+            
+            const first = arr.shift();
+            output += `first = arr.shift() 返回: ${first}\n`;
+            output += `結果: [${arr.join(', ')}]\n`;
+            
+            document.getElementById('shift-output').textContent = output;
+        }
+
+        function demoUnshift() {
+            let output = "unshift() 示範\n";
+            output += "==================\n\n";
+            
+            const arr = [2, 3];
+            output += "初始: [2, 3]\n";
+            
+            const length = arr.unshift(0, 1);
+            output += `arr.unshift(0, 1) 返回: ${length}\n`;
+            output += `結果: [${arr.join(', ')}]\n`;
+            
+            document.getElementById('unshift-output').textContent = output;
+        }
+
+        function demoSplice() {
+            let output = "splice() 示範\n";
+            output += "==================\n\n";
+            
+            const arr1 = [1, 2, 3, 4, 5];
+            output += "初始: [1, 2, 3, 4, 5]\n\n";
+            
+            const removed = arr1.splice(1, 2);
+            output += "arr.splice(1, 2) 返回: [" + removed.join(', ') + "]\n";
+            output += `結果: [${arr1.join(', ')}]\n\n`;
+            
+            const arr2 = [1, 4, 5];
+            arr2.splice(1, 0, 2, 3);
+            output += "arr.splice(1, 0, 2, 3) (插入)\n";
+            output += `結果: [${arr2.join(', ')}]\n`;
+            
+            document.getElementById('splice-output').textContent = output;
+        }
+
+        function demoSlice() {
+            let output = "slice() 示範\n";
+            output += "==================\n\n";
+            
+            const arr = [1, 2, 3, 4, 5];
+            output += "原陣列: [1, 2, 3, 4, 5]\n\n";
+            
+            const sliced = arr.slice(1, 3);
+            output += "sliced = arr.slice(1, 3)\n";
+            output += `返回: [${sliced.join(', ')}]\n`;
+            output += `原陣列: [${arr.join(', ')}] (不變)\n\n`;
+            
+            const copy = arr.slice();
+            output += "copy = arr.slice()\n";
+            output += `返回: [${copy.join(', ')}]`;
+            
+            document.getElementById('slice-output').textContent = output;
+        }
+
+        function demoJoin() {
+            let output = "join() 示範\n";
+            output += "==================\n\n";
+            
+            const arr = ['Hello', 'World', 'JavaScript'];
+            output += `陣列: [${arr.map(x => '"' + x + '"').join(', ')}]\n\n`;
+            
+            output += `arr.join() = "${arr.join()}"\n`;
+            output += `arr.join(' ') = "${arr.join(' ')}"\n`;
+            output += `arr.join('-') = "${arr.join('-')}"`;
+            
+            document.getElementById('join-output').textContent = output;
+        }
+
+        function demoConcat() {
+            let output = "concat() 示範\n";
+            output += "==================\n\n";
+            
+            const arr1 = [1, 2];
+            const arr2 = [3, 4];
+            const arr3 = [5, 6];
+            
+            output += `arr1 = [${arr1.join(', ')}]\n`;
+            output += `arr2 = [${arr2.join(', ')}]\n`;
+            output += `arr3 = [${arr3.join(', ')}]\n\n`;
+            
+            const merged = arr1.concat(arr2, arr3);
+            output += `merged = arr1.concat(arr2, arr3)\n`;
+            output += `結果: [${merged.join(', ')}]\n\n`;
+            output += `arr1: [${arr1.join(', ')}] (不變)`;
+            
+            document.getElementById('concat-output').textContent = output;
+        }
+
+        function demoIndexOf() {
+            let output = "indexOf() / lastIndexOf() 示範\n";
+            output += "==================\n\n";
+            
+            const arr = [1, 2, 3, 2, 1];
+            output += `陣列: [${arr.join(', ')}]\n\n`;
+            
+            output += `arr.indexOf(2) = ${arr.indexOf(2)}\n`;
+            output += `arr.lastIndexOf(2) = ${arr.lastIndexOf(2)}\n`;
+            output += `arr.indexOf(5) = ${arr.indexOf(5)}\n`;
+            
+            document.getElementById('indexOf-output').textContent = output;
+        }
+
+        function demoIncludes() {
+            let output = "includes() 示範\n";
+            output += "==================\n\n";
+            
+            const arr = [1, 2, 3, NaN];
+            output += `陣列: [1, 2, 3, NaN]\n\n`;
+            
+            output += `arr.includes(2) = ${arr.includes(2)}\n`;
+            output += `arr.includes(5) = ${arr.includes(5)}\n`;
+            output += `arr.includes(NaN) = ${arr.includes(NaN)} (includes 可以找到 NaN)\n`;
+            output += `arr.indexOf(NaN) = ${arr.indexOf(NaN)} (indexOf 找不到 NaN)\n`;
+            
+            document.getElementById('includes-output').textContent = output;
+        }
+
+        // ==================== 遍歷和查找 ====================
+        function demoForEach() {
+            let output = "forEach() 示範\n";
+            output += "==================\n\n";
+            
+            const arr = ['a', 'b', 'c'];
+            output += `陣列: [${arr.map(x => '"' + x + '"').join(', ')}]\n\n`;
+            output += "遍歷結果:\n";
+            
+            arr.forEach((item, index, array) => {
+                output += `${index}: ${item}\n`;
+            });
+            
+            document.getElementById('forEach-output').textContent = output;
+        }
+
+        function demoMap() {
+            let output = "map() 示範\n";
+            output += "==================\n\n";
+            
+            const numbers = [1, 2, 3, 4];
+            output += `原陣列: [${numbers.join(', ')}]\n\n`;
+            
+            const doubled = numbers.map(x => x * 2);
+            output += `doubled = numbers.map(x => x * 2)\n`;
+            output += `結果: [${doubled.join(', ')}]\n\n`;
+            
+            const users = [
+                { name: 'Alice', age: 25 },
+                { name: 'Bob', age: 30 }
+            ];
+            const names = users.map(u => u.name);
+            output += `提取屬性: users.map(u => u.name)\n`;
+            output += `結果: [${names.map(x => '"' + x + '"').join(', ')}]`;
+            
+            document.getElementById('map-output').textContent = output;
+        }
+
+        function demoFilter() {
+            let output = "filter() 示範\n";
+            output += "==================\n\n";
+            
+            const numbers = [1, 2, 3, 4, 5, 6];
+            output += `原陣列: [${numbers.join(', ')}]\n\n`;
+            
+            const evens = numbers.filter(x => x % 2 === 0);
+            output += `evens = numbers.filter(x => x % 2 === 0)\n`;
+            output += `結果: [${evens.join(', ')}]`;
+            
+            document.getElementById('filter-output').textContent = output;
+        }
+
+        function demoFind() {
+            let output = "find() 示範\n";
+            output += "==================\n\n";
+            
+            const users = [
+                { id: 1, name: 'Alice' },
+                { id: 2, name: 'Bob' },
+                { id: 3, name: 'Carol' }
+            ];
+            
+            output += "用戶列表:\n";
+            users.forEach(u => output += `  { id: ${u.id}, name: '${u.name}' }\n`);
+            output += "\n";
+            
+            const user = users.find(u => u.id === 2);
+            output += `user = users.find(u => u.id === 2)\n`;
+            output += `結果: { id: ${user.id}, name: '${user.name}' }\n\n`;
+            
+            const notFound = users.find(u => u.id === 999);
+            output += `notFound = users.find(u => u.id === 999)\n`;
+            output += `結果: ${notFound}`;
+            
+            document.getElementById('find-output').textContent = output;
+        }
+
+        function demoFindIndex() {
+            let output = "findIndex() 示範\n";
+            output += "==================\n\n";
+            
+            const users = [
+                { id: 1, name: 'Alice' },
+                { id: 2, name: 'Bob' },
+                { id: 3, name: 'Carol' }
+            ];
+            
+            const index = users.findIndex(u => u.name === 'Bob');
+            output += `index = users.findIndex(u => u.name === 'Bob')\n`;
+            output += `結果: ${index}\n\n`;
+            
+            const notFound = users.findIndex(u => u.id === 999);
+            output += `notFound = users.findIndex(u => u.id === 999)\n`;
+            output += `結果: ${notFound}`;
+            
+            document.getElementById('findIndex-output').textContent = output;
+        }
+
+        function demoSome() {
+            let output = "some() 示範\n";
+            output += "==================\n\n";
+            
+            const numbers = [1, 2, 3, 4, 5];
+            output += `陣列: [${numbers.join(', ')}]\n\n`;
+            
+            const hasGreater = numbers.some(x => x > 3);
+            output += `has = numbers.some(x => x > 3)\n`;
+            output += `結果: ${hasGreater}\n\n`;
+            
+            const hasNegative = numbers.some(x => x < 0);
+            output += `has = numbers.some(x => x < 0)\n`;
+            output += `結果: ${hasNegative}`;
+            
+            document.getElementById('some-output').textContent = output;
+        }
+
+        function demoEvery() {
+            let output = "every() 示範\n";
+            output += "==================\n\n";
+            
+            const numbers = [2, 4, 6, 8];
+            output += `陣列: [${numbers.join(', ')}]\n\n`;
+            
+            const allEven = numbers.every(x => x % 2 === 0);
+            output += `all = numbers.every(x => x % 2 === 0)\n`;
+            output += `結果: ${allEven}\n\n`;
+            
+            const numbers2 = [1, 2, 3, 4];
+            output += `陣列2: [${numbers2.join(', ')}]\n`;
+            const allEven2 = numbers2.every(x => x % 2 === 0);
+            output += `all = numbers2.every(x => x % 2 === 0)\n`;
+            output += `結果: ${allEven2}`;
+            
+            document.getElementById('every-output').textContent = output;
+        }
+
+        // ==================== 轉換和聚合 ====================
+        function demoReduce() {
+            let output = "reduce() 示範\n";
+            output += "==================\n\n";
+            
+            const numbers = [1, 2, 3, 4, 5];
+            output += `陣列: [${numbers.join(', ')}]\n\n`;
+            
+            const sum = numbers.reduce((acc, curr) => acc + curr, 0);
+            output += `sum = numbers.reduce((a, b) => a + b, 0)\n`;
+            output += `結果: ${sum}\n\n`;
+            
+            const product = numbers.reduce((acc, curr) => acc * curr, 1);
+            output += `product = numbers.reduce((a, b) => a * b, 1)\n`;
+            output += `結果: ${product}`;
+            
+            document.getElementById('reduce-output').textContent = output;
+        }
+
+        function demoReduceRight() {
+            let output = "reduceRight() 示範\n";
+            output += "==================\n\n";
+            
+            const arr = [1, 2, 3, 4];
+            output += `陣列: [${arr.join(', ')}]\n\n`;
+            
+            const result = arr.reduceRight((acc, curr) => acc + curr, 0);
+            output += `result = arr.reduceRight((a, b) => a + b, 0)\n`;
+            output += `結果: ${result}\n\n`;
+            output += `執行順序: 0 + 4 = 4, 4 + 3 = 7, 7 + 2 = 9, 9 + 1 = 10`;
+            
+            document.getElementById('reduceRight-output').textContent = output;
+        }
+
+        function demoSort() {
+            let output = "sort() 示範\n";
+            output += "==================\n\n";
+            
+            const fruits = ['banana', 'apple', 'cherry'];
+            output += `水果: [${fruits.map(x => '"' + x + '"').join(', ')}]\n`;
+            fruits.sort();
+            output += `sort() 後: [${fruits.map(x => '"' + x + '"').join(', ')}]\n\n`;
+            
+            const nums = [10, 5, 40, 25, 1000];
+            output += `數字: [${nums.join(', ')}]\n`;
+            output += "sort() 後 (字符串排序): [" + [...nums].sort().join(', ') + "]\n";
+            
+            const nums2 = [10, 5, 40, 25, 1000];
+            nums2.sort((a, b) => a - b);
+            output += `sort((a, b) => a - b) 後: [${nums2.join(', ')}]`;
+            
+            document.getElementById('sort-output').textContent = output;
+        }
+
+        function demoReverse() {
+            let output = "reverse() 示範\n";
+            output += "==================\n\n";
+            
+            const arr = [1, 2, 3, 4, 5];
+            output += `原陣列: [${arr.join(', ')}]\n`;
+            arr.reverse();
+            output += `reverse() 後: [${arr.join(', ')}]\n\n`;
+            
+            const str = "Hello";
+            const reversed = str.split('').reverse().join('');
+            output += `反轉字符串: "${str}"\n`;
+            output += `結果: "${reversed}"`;
+            
+            document.getElementById('reverse-output').textContent = output;
+        }
+
+        function demoFlat() {
+            let output = "flat() 示範\n";
+            output += "==================\n\n";
+            
+            const arr = [1, 2, [3, 4, [5, 6]]];
+            output += "原陣列: [1, 2, [3, 4, [5, 6]]]\n\n";
+            
+            const flat1 = arr.flat();
+            output += `flat() 後: [${flat1.join(', ')}]\n`;
+            output += "(只扁平化一層)\n\n";
+            
+            const flatAll = arr.flat(Infinity);
+            output += `flat(Infinity) 後: [${flatAll.join(', ')}]`;
+            
+            document.getElementById('flat-output').textContent = output;
+        }
+
+        function demoFlatMap() {
+            let output = "flatMap() 示範\n";
+            output += "==================\n\n";
+            
+            const arr = [1, 2, 3];
+            output += `原陣列: [${arr.join(', ')}]\n\n`;
+            
+            const result = arr.flatMap(x => [x, x * 2]);
+            output += `result = arr.flatMap(x => [x, x * 2])\n`;
+            output += `結果: [${result.join(', ')}]\n\n`;
+            
+            const arr2 = [1, 2, null, 3, undefined, 4];
+            const filtered = arr2.flatMap(x => x ? [x] : []);
+            output += `過濾空值: [${filtered.join(', ')}]`;
+            
+            document.getElementById('flatMap-output').textContent = output;
+        }
+
+        // ==================== 建立和轉換 ====================
+        function demoArrayFrom() {
+            let output = "Array.from() 示範\n";
+            output += "==================\n\n";
+            
+            const str = "Hello";
+            const arr1 = Array.from(str);
+            output += `Array.from("Hello")\n`;
+            output += `結果: [${arr1.map(x => '"' + x + '"').join(', ')}]\n\n`;
+            
+            const arrayLike = { 0: 'a', 1: 'b', length: 2 };
+            const arr2 = Array.from(arrayLike);
+            output += `Array.from({ 0: 'a', 1: 'b', length: 2 })\n`;
+            output += `結果: [${arr2.map(x => '"' + x + '"').join(', ')}]\n\n`;
+            
+            const numbers = Array.from({ length: 5 }, (_, i) => i + 1);
+            output += `Array.from({ length: 5 }, (_, i) => i + 1)\n`;
+            output += `結果: [${numbers.join(', ')}]`;
+            
+            document.getElementById('arrayFrom-output').textContent = output;
+        }
+
+        function demoArrayOf() {
+            let output = "Array.of() 示範\n";
+            output += "==================\n\n";
+            
+            const arr1 = Array.of(5);
+            output += `Array.of(5)\n`;
+            output += `結果: [${arr1.join(', ')}]\n\n`;
+            
+            const arr2 = Array(5);
+            output += `Array(5) (對比)\n`;
+            output += `結果: 5 個空位的陣列\n\n`;
+            
+            const arr3 = Array.of(1, 2, 3);
+            output += `Array.of(1, 2, 3)\n`;
+            output += `結果: [${arr3.join(', ')}]`;
+            
+            document.getElementById('arrayOf-output').textContent = output;
+        }
+
+        function demoFill() {
+            let output = "fill() 示範\n";
+            output += "==================\n\n";
+            
+            const arr = new Array(5);
+            arr.fill(0);
+            output += `const arr = new Array(5);\n`;
+            output += `arr.fill(0)\n`;
+            output += `結果: [${arr.join(', ')}]\n\n`;
+            
+            const arr2 = [1, 2, 3, 4, 5];
+            arr2.fill('x', 1, 3);
+            output += `[1, 2, 3, 4, 5].fill('x', 1, 3)\n`;
+            output += `結果: [${arr2.join(', ')}]`;
+            
+            document.getElementById('fill-output').textContent = output;
+        }
+
+        function demoCopyWithin() {
+            let output = "copyWithin() 示範\n";
+            output += "==================\n\n";
+            
+            const arr = [1, 2, 3, 4, 5];
+            arr.copyWithin(0, 3, 5);
+            output += `[1, 2, 3, 4, 5].copyWithin(0, 3, 5)\n`;
+            output += `結果: [${arr.join(', ')}]`;
+            
+            document.getElementById('copyWithin-output').textContent = output;
+        }
+
+        // ==================== 進階應用 ====================
+        function demoChaining() {
+            let output = "map 和 filter 鏈式組合\n";
+            output += "==================\n\n";
+            
+            const products = [
+                { name: 'iPhone', price: 999, inStock: true },
+                { name: 'iPad', price: 599, inStock: false },
+                { name: 'Mac', price: 1999, inStock: true }
+            ];
+            
+            output += "原始數據:\n";
+            products.forEach(p => {
+                output += `  { name: '${p.name}', price: ${p.price}, inStock: ${p.inStock} }\n`;
+            });
+            output += "\n";
+            
+            const result = products
+                .filter(p => p.inStock)
+                .map(p => ({
+                    name: p.name,
+                    discountedPrice: (p.price * 0.9).toFixed(2)
+                }));
+            
+            output += "filter(inStock).map(打折):\n";
+            result.forEach(p => {
+                output += `  { name: '${p.name}', discountedPrice: ${p.discountedPrice} }\n`;
+            });
+            
+            document.getElementById('chaining-output').textContent = output;
+        }
+
+        function demoReduceGroup() {
+            let output = "使用 reduce 分組\n";
+            output += "==================\n\n";
+            
+            const students = [
+                { name: 'Alice', grade: 'A', score: 90 },
+                { name: 'Bob', grade: 'B', score: 80 },
+                { name: 'Carol', grade: 'A', score: 92 }
+            ];
+            
+            const byGrade = students.reduce((acc, student) => {
+                const grade = student.grade;
+                if (!acc[grade]) acc[grade] = [];
+                acc[grade].push(student);
+                return acc;
+            }, {});
+            
+            output += "按成績分組:\n\n";
+            for (const grade in byGrade) {
+                output += `成績 ${grade}:\n`;
+                byGrade[grade].forEach(s => {
+                    output += `  - ${s.name} (${s.score})\n`;
+                });
+            }
+            
+            document.getElementById('reduceGroup-output').textContent = output;
+        }
+
+        function demoDataStats() {
+            let output = "數據統計應用\n";
+            output += "==================\n\n";
+            
+            const scores = [85, 92, 78, 95, 88, 76, 90];
+            output += `分數: [${scores.join(', ')}]\n\n`;
+            
+            const sum = scores.reduce((a, b) => a + b, 0);
+            const avg = (sum / scores.length).toFixed(2);
+            const max = Math.max(...scores);
+            const min = Math.min(...scores);
+            const passed = scores.filter(s => s >= 60).length;
+            const excellent = scores.filter(s => s >= 90).length;
+            
+            output += `總分: ${sum}\n`;
+            output += `平均: ${avg}\n`;
+            output += `最高: ${max}\n`;
+            output += `最低: ${min}\n`;
+            output += `及格人數: ${passed}\n`;
+            output += `優秀人數: ${excellent}`;
+            
+            document.getElementById('dataStats-output').textContent = output;
+        }
+
+        function demoDataTransform() {
+            let output = "數據轉換應用\n";
+            output += "==================\n\n";
+            
+            const users = [
+                { id: 1, name: 'Alice', age: 25, dept: 'HR' },
+                { id: 2, name: 'Bob', age: 30, dept: 'IT' },
+                { id: 3, name: 'Carol', age: 28, dept: 'IT' }
+            ];
+            
+            output += "原始數據:\n";
+            users.forEach(u => {
+                output += `  { id: ${u.id}, name: '${u.name}', age: ${u.age}, dept: '${u.dept}' }\n`;
+            });
+            output += "\n";
+            
+            const names = users.map(u => u.name);
+            output += `抽取名字: [${names.map(x => '"' + x + '"').join(', ')}]\n\n`;
+            
+            const deptCount = users.reduce((acc, u) => {
+                acc[u.dept] = (acc[u.dept] || 0) + 1;
+                return acc;
+            }, {});
+            output += `部門統計: `;
+            output += JSON.stringify(deptCount);
+            
+            document.getElementById('dataTransform-output').textContent = output;
+        }
+
+        function demoPerformance() {
+            let output = "性能和最佳實踐\n";
+            output += "==================\n\n";
+            
+            const nums = [1, 2, 3, 4, 5, 6];
+            
+            // 多次遍歷
+            const start1 = performance.now();
+            const result1 = nums
+                .filter(x => x > 2)
+                .map(x => x * 2)
+                .filter(x => x < 10);
+            const time1 = performance.now() - start1;
+            
+            // 單次遍歷
+            const start2 = performance.now();
+            const result2 = nums.reduce((acc, x) => {
+                if (x > 2 && x * 2 < 10) {
+                    acc.push(x * 2);
+                }
+                return acc;
+            }, []);
+            const time2 = performance.now() - start2;
+            
+            output += `兩種方法結果相同:\n`;
+            output += `方法1: [${result1.join(', ')}]\n`;
+            output += `方法2: [${result2.join(', ')}]\n\n`;
+            
+            output += `性能對比:\n`;
+            output += `鏈式 (3 次遍歷): ${time1.toFixed(4)} ms\n`;
+            output += `reduce (1 次遍歷): ${time2.toFixed(4)} ms\n\n`;
+            
+            output += `建議:\n`;
+            output += `✓ 簡單操作用 map/filter/find\n`;
+            output += `✓ 複雜轉換考慮用 reduce\n`;
+            output += `✓ 數據量大時優化遍歷次數`;
+            
+            document.getElementById('performance-output').textContent = output;
+        }
+    </script>
+</body>
+</html>
