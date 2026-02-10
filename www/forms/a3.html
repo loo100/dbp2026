@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="a3.php" method="POST">
+    <fieldset>
+        <legend>聯絡我們</legend>
+        
+        <label for="name">姓名：</label>
+        <input type="text" id="name" name="user_name" placeholder="請輸入姓名" required>
+        <br><br>
+
+        <label for="mail">電子信箱：</label>
+        <input type="email" id="mail" name="user_email" required>
+        <br><br>
+
+        <label for="msg">留言內容：</label><br>
+        <textarea id="msg" name="user_message" rows="4" cols="30"></textarea>
+        <br><br>
+
+        <button type="submit">確認送出</button>
+    </fieldset>
+</form>
+</body>
+</html>

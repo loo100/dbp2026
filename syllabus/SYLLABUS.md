@@ -5,8 +5,28 @@
 本課程教授學生如何使用 HTML、CSS、JavaScript、PHP 及 MySQL 資料庫開發動態網站應用。課程以 Laragon 為開發環境，涵蓋從基礎語法到進階應用（包括 Ajax、PHP GD 繪圖、Laravel 框架介紹）的完整流程。
 
 ---
+| 週次 | 主題 | 學習重點 | 練習/作業 |
+| --- | --- | --- | --- |
+| W1 | 課程介紹 | 下載與安裝 Laragon。<br>Laragon 與開發環境設置。<br>了解 Apache 與 PHP 運作原理。<br>了解 GitHub, Github Copilot 運作。 | |
+| W2 | 前端基礎 | HTML, CSS, JS，學習引入 UI 框架。<br>設計基本的網站佈局及基礎互動。 | first, todo |
+| W3 | PHP 基礎 | 變數、陣列、迴圈、判斷式。<br>HTML 與 PHP 的混寫方式。 | firstPHP |
+| W4 | PHP 基礎2 | File, 繪圖 gd。 | gd, pagination |
+| W5 | 表單處理 | HTTP GET, POST。接收使用者輸入的資料。上傳檔案。Cookie, Session。 | forms, forms_session |
+| W6 | MySQL 資料庫入門 | 使用 Laragon 內建的 HeidiSQL。<br>建立資料庫、資料表 (Table)、欄位型態。 | db_basic |
+| W7 | PHP 連接資料庫 (PDO) | 為什麼要用 PDO (安全性)。建立 db.php 連線檔案。<br>Create (寫入資料) 與 Read (顯示列表)。Update (修改資料)。<br>CRUD (新增與讀取) (更新與刪除)。 | db_basic_crud |
+| W8 | PHP 進階 | 物件導向概念，composer，寄信 mail。 | mail |
+| W9 | 專案應用 1. 留言板/討論區 | 基本資料庫存取練習。 | Guestbook, newsGroup |
+| W10 | 專案應用 2. 會員系統 | 註冊(密碼雜湊)；Session 與 Cookie；登入登出；<br>寄信(驗證)；檔案上傳(會員相片)。 | members |
+| W11 | 專案應用 3. 投票系統 | 繪製統計圖表。 | votes |
+| W12 | 專案應用 4. 購物車 | Cookie 實務應用。 | cart |
+| W13 | 專案應用 5. 網路相簿 | 圖片檔案處理及檔案上傳。 | photoAlbum |
+| W14 | Ajax 概念介紹 | ES6 Fetch, REST ful 及 POSTMAN。 | ajax |
+| W15 | Laravel 開發簡介 | | firstLaravel |
+| W16 | 期末專案展示 | 自行擬定題目，功能不少於電子商務網站。 | |
 
-## 第 01 週：課程導論與環境架設
+
+---
+## 第 01 週：課程導論 laragon與開發環境架設
 
 **教學目標**：理解 Web 應用的運作原理、安裝並配置 Laragon 開發環境、撰寫第一個 PHP 程式。
 
@@ -68,14 +88,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 **核心內容**：檔案管理及處理、物件導向概念、繪圖功能。
 
 ---
-## 第 05 週：表單處裡(Form Handling)
+## 第 05 週：表單處裡
 
 
 **教學目標**：學習如何在網頁之間交換訊息。
 
 
-**核心內容**：HTTP GET vs POST 差異。接收使用者輸入的資料。
-HTML DOM 基礎，Javascript ES6。
+**核心內容**：HTTP GET, POST。接收使用者輸入的資料。
+上傳檔案。 Cookie。Session。
 
 
 ---
@@ -103,7 +123,7 @@ SELECT * FROM users WHERE username = 'john';
 
 ---
 
-## 第 07 週：PHP 與資料庫連線
+## 第 07 週：PHP 與資料庫連線 (PDO)(CRUD)
 
 **教學目標**：使用 PDO 進行安全連線、實現資料讀取與顯示、防止 SQL Injection 攻擊。
 
@@ -129,48 +149,12 @@ $stmt->execute([$_POST['username']]);
 $user = $stmt->fetch();
 ?>
 ```
-
 ---
-## 第 08 週：Ajax 與非同步請求
+## 第 08 週：PHP 進階
+**教學目標**： 物件導向程式設計。套件管理 composer 。寄信。
 
-**教學目標**：理解 Ajax 的概念與應用、使用 Fetch API 進行非同步請求、處理 JSON 資料。
+**核心內容**： PHP Mailer。透過 Google mail service 寄信。
 
-**核心內容**：Fetch API、JSON 處理（JSON.stringify、JSON.parse）。
-
-**範例程式碼**：
-```javascript
-fetch('api/get_messages.php')
-    .then(response => response.json())
-    .then(data => {
-        document.getElementById('messages').innerHTML = data.messages;
-    })
-    .catch(error => console.error('Error:', error));
-
-fetch('api/add_message.php', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-        name: 'John',
-        content: 'Hello World'
-    })
-})
-.then(response => response.json())
-.then(data => console.log(data));
-```
-
-**PHP 端**：
-```php
-<?php
-header('Content-Type: application/json');
-
-$stmt = $pdo->query("SELECT * FROM messages ORDER BY created_at DESC");
-$messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-echo json_encode(['messages' => $messages]);
-?>
-```
 
 ---
 
@@ -192,7 +176,7 @@ CREATE TABLE messages (
 
 ---
 
-## 第 10 週：專案應用 2. 會員系統 (一) - 註冊與密碼安全
+## 第 10 週：專案應用 2. 會員系統 - 註冊與密碼安全
 
 **教學目標**：實現使用者註冊功能、使用 password_hash() 安全儲存密碼、理解 Session 與 Cookie 機制。
 
@@ -216,10 +200,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 ?>
 ```
-
----
-
-## 第 11 週：專案應用 2. 會員系統 (二) - 登入、寄信與頭像上傳
 
 **教學目標**：實現登入與登出功能、使用 PHPMailer 發送驗證信、處理檔案上傳。
 
@@ -251,7 +231,7 @@ if ($_FILES['avatar']['size'] > 0) {
 
 ---
 
-## 第 12 週：專案應用 3. PHP GD 繪圖與投票系統
+## 第 11 週：專案應用 3. PHP GD 繪圖與投票系統
 
 **教學目標**：掌握 PHP GD 函式庫基本用法、動態產生圖表、實現投票系統。
 
@@ -287,7 +267,7 @@ imagedestroy($image);
 
 
 
-## 第 13 週：專案應用 4. 電子商務基礎 - 購物車實現
+## 第 12 週：專案應用 4. 電子商務基礎 - 購物車實現
 
 **教學目標**：使用 Cookie 暫存購物清單、實現購物車的增刪改查功能、計算購物車總金額。
 
@@ -329,7 +309,7 @@ foreach ($cart as $product_id => $quantity) {
 
 ---
 
-## 第 14 週：專案應用 5. 檔案處理進階 - 網路相簿
+## 第 13 週：專案應用 5. 檔案處理進階 - 網路相簿
 
 **教學目標**：實現圖片檔案上傳與驗證、使用 PHP GD 自動產生縮圖、批次處理多個檔案。
 
@@ -364,7 +344,48 @@ if ($_FILES['image']['size'] > 0) {
 **作業 5：網路相簿**：建立個人相簿系統，支援批次上傳與自動縮圖產生。
 
 ---
+## 第 14 週：Ajax 與非同步請求
 
+**教學目標**：理解 Ajax 的概念與應用、使用 Fetch API 進行非同步請求、處理 JSON 資料。
+
+**核心內容**：Fetch API、JSON 處理（JSON.stringify、JSON.parse）。
+
+**範例程式碼**：
+```javascript
+fetch('api/get_messages.php')
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('messages').innerHTML = data.messages;
+    })
+    .catch(error => console.error('Error:', error));
+
+fetch('api/add_message.php', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        name: 'John',
+        content: 'Hello World'
+    })
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+
+**PHP 端**：
+```php
+<?php
+header('Content-Type: application/json');
+
+$stmt = $pdo->query("SELECT * FROM messages ORDER BY created_at DESC");
+$messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+echo json_encode(['messages' => $messages]);
+?>
+```
+
+---
 ## 第 15 週：Laravel 框架介紹
 
 **教學目標**：理解 MVC 架構、掌握 Laravel 基本概念、使用 Eloquent ORM 進行資料庫操作。

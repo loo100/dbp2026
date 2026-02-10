@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>郵件發送系統</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="file"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        input[type="file"] {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .required {
+            color: #e74c3c;
+            margin-left: 2px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .info-text {
+            font-size: 12px;
+            color: #888;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📧 郵件發送系統</h1>
+        <form action="tosend.php" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="sender_name">寄件人姓名 <span class="required">*</span></label>
+                <input type="text" id="sender_name" name="sender_name" required placeholder="請輸入您的姓名">
+            </div>
+
+            <div class="form-group">
+                <label for="sender_email">寄件人信箱 <span class="required">*</span></label>
+                <input type="email" id="sender_email" name="sender_email" required placeholder="example@email.com">
+            </div>
+
+            <div class="form-group">
+                <label for="recipient_name">收件人姓名 <span class="required">*</span></label>
+                <input type="text" id="recipient_name" name="recipient_name" required placeholder="請輸入收件人姓名">
+            </div>
+
+            <div class="form-group">
+                <label for="recipient_email">收件人信箱 <span class="required">*</span></label>
+                <input type="email" id="recipient_email" name="recipient_email" required placeholder="recipient@email.com">
+            </div>
+
+            <div class="form-group">
+                <label for="subject">郵件主旨 <span class="required">*</span></label>
+                <input type="text" id="subject" name="subject" required placeholder="請輸入郵件主旨">
+            </div>
+
+            <div class="form-group">
+                <label for="message">郵件內容 <span class="required">*</span></label>
+                <textarea id="message" name="message" required placeholder="請輸入郵件內容..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="attachment">附件檔案</label>
+                <input type="file" id="attachment" name="attachment">
+                <p class="info-text">支援常見檔案格式，建議檔案大小不超過 10MB</p>
+            </div>
+
+            <button type="submit" class="btn-submit">✉️ 發送郵件</button>
+        </form>
+    </div>
+</body>
+</html>
