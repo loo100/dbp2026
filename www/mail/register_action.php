@@ -44,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $mail->Host       = 'smtp.gmail.com';
         $mail->SMTPAuth   = true;
         $mail->Username   = 'hw.pcchen@gmail.com'; // 你的 Gmail
-        $mail->Password   = 'urqtuvuseoezdwol';    // 你的 Google 應用程式密碼
+        $mail->Password   = '--------------';    // 你的 Google 應用程式密碼
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port       = 587;
         $mail->CharSet    = 'UTF-8';

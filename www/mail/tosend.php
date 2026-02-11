@@ -39,7 +39,7 @@ try {
     $mail->Host       = 'smtp.gmail.com';
     $mail->SMTPAuth   = true;
     $mail->Username   = 'hw.pcchen@gmail.com';        // 請更改為您的 Gmail
-    $mail->Password   = 'urqtuvuseoezdwol';           // 請更改為您的 Google 應用程式密碼
+    $mail->Password   = '--------------';           // 請更改為您的 Google 應用程式密碼
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
     $mail->Port       = 587;
     $mail->CharSet    = 'UTF-8';
