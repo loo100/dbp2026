@@ -61,7 +61,7 @@ function escape($value)
 </head>
 <body>
     <h1>PHP 檔案處理範例</h1>
-
+    
     <h2>操作結果</h2>
     <ul>
         <?php foreach ($messages as $msg): ?>
@@ -74,5 +74,21 @@ function escape($value)
 
     <h2>資料夾清單</h2>
     <pre><?= escape(implode("\n", $files)) ?></pre>
+
+    <h2>檔案系統資訊</h2>
+    <h3>伺服器變數 這個檔案</h3>
+    <pre><?= escape($_SERVER['PHP_SELF']) ?></pre>
+    <h3>伺服器變數 文件根目錄</h3>
+    <pre><?= escape($_SERVER['DOCUMENT_ROOT']) ?></pre>
+    <h3>其他伺服器變數</h3>
+    <table>
+        <?php foreach ($_SERVER as $ind => $val): ?>
+            <tr>
+                <td><?= escape($ind) ?></td>
+                <td><?= escape($val) ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </table>
+
 </body>
 </html>
