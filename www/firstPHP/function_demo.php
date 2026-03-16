@@ -82,6 +82,7 @@ $makeCounter = function ($base) use ($incre) {  // 使用 use 捕獲外部變數
 
         <div class="item">匿名函式：<code><?php echo $anonSum; ?></code></div>
         <div class="item">箭頭函式（乘上 2）：<code><?php echo $arrowResult; ?></code></div>
+        <div class="item">閉包示範（base 5 + incre 10）：<code><?php echo $makeCounter(5); ?></code></div>
     </div>
 </body>
 </html>
