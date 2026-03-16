@@ -28,15 +28,22 @@ $afterRef = increaseReference($refNum);
 
 // 匿名函式（Closure）
 $anonymousAdd = function ($x, $y) {
-    return $x + $y;
+    return $x + $y; 
 };
 $anonSum = $anonymousAdd(3, 4);
 
 // 箭頭函式（Arrow Function）
 $multiplier = 2;
-$arrowDouble = fn ($n) => $n * $multiplier;
+$arrowDouble = fn ($n) => $n * $multiplier;  // 箭頭函式會自動捕獲外部變數 $multiplier
 $arrowResult = $arrowDouble(6);
+
+// 閉包（Closure）示範
+$incre = 10;
+$makeCounter = function ($base) use ($incre) {  // 使用 use 捕獲外部變數 $incre
+    return $base + $incre;
+}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="zh-TW">
