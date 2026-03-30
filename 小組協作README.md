@@ -57,10 +57,4 @@ git config --local user.email "你的學校信箱 (例如: u1@nuu.edu.tw)"
 ### ✅ 繳交清單
 - [ ] 是否已正確設定 git config --local？
 
-- [ ] index.php 內是否正確使用 PHP 陣列儲存資料？
-
-- [ ] 平均分數運算是否準確？
-
-- [ ] CSS 是否能讓成績單美觀且易讀（及格綠色、不及格紅色）？
-
 - [ ] 是否所有成員都有 Commit 貢獻紀錄（老師會檢查 Insights）？
