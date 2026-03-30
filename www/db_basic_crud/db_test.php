@@ -1,6 +1,6 @@
 <?php
 $host = '127.0.0.1';
-$db   = 'u1333000';
+$db   = 'test_db';
 $user = 'root';
 $pass = ''; // Laragon 預設密碼為空
 $charset = 'utf8mb4';

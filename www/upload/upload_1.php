@@ -4,7 +4,7 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['myImage'])) {
-    $file = $_FILES['myImage'];
+    $file = $_FILES['myImage'];   // 上傳的檔案資訊
     $tmpPath = $file['tmp_name'];
 
     // 1. 取得影像大小與格式資訊
@@ -39,6 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['myImage'])) {
     if ($mime == 'image/png' || $mime == 'image/webp') {
         imagealphablending($dstImg, false);
         imagesavealpha($dstImg, true);
+        // 在 GD 裡，alpha 0 是不透明，127 是完全透明
         $transparent = imagecolorallocatealpha($dstImg, 255, 255, 255, 127);
         imagefill($dstImg, 0, 0, $transparent);
     }

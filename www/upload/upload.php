@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['my_image'])) {
 
     if (in_array($fileExt, $allowed)) {
         if ($fileError === 0) {
-            if ($fileSize < 5000000) { // 限制 5MB
+            if ($fileSize < 50000000) { // 限制 5MB
                 // 3. 產生唯一檔名，避免重複覆蓋
                 $newFileName = uniqid('', true) . "." . $fileExt;
                 $fileDestination = 'uploads/' . $newFileName;
