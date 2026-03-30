@@ -3,7 +3,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 require 'vendor/autoload.php'; // 引入 Composer 自動載入
-require 'db_config.php';
+require 'db.php';
 
 $host = '127.0.0.1';
 $db   = 'test_db';

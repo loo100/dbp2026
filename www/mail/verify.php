@@ -1,5 +1,5 @@
 <?php
-require 'db_config.php';
+require 'db.php';
 
 if (isset($_GET['token'])) {
     $token = $_GET['token'];
