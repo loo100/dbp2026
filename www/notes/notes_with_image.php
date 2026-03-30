@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_note'])) {
         $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
         $allowed = ['jpg', 'jpeg', 'png', 'gif'];
 
-        if (in_array($ext, $allowed) && $file['size'] < 2000000) { // 限制 2MB
+        if (in_array($ext, $allowed) && $file['size'] < 20000000) { // 限制 20MB
             $newName = uniqid('IMG_', true) . "." . $ext;
             if (!is_dir('uploads')) { mkdir('uploads'); }
             
@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_note'])) {
                 $image_path = $dest; // 上傳成功，記錄路徑
             }
         } else {
-            $error = "圖片格式不符或檔案過大（限制 2MB）";
+            $error = "圖片格式不符或檔案過大（限制 20MB）";
         }
     }
 
