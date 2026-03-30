@@ -19,6 +19,3 @@ CREATE TABLE IF NOT EXISTS notes (
     INDEX idx_user_id (user_id)
 );
 
--- 插入測試使用者
-INSERT INTO users (username, password, email) VALUES 
-('testuser', '$2y$10$8K1X...(需要用 password_hash() 生成的密碼)', 'test@example.com');
