@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>線上送信系統</title>
+    <script type="text/javascript">
+      function send()
+      {
+        if (document.myForm.from_name.value.length == 0)
+          alert("寄件者欄位不可以空白哦！");
+        else if (document.myForm.from_email.value.length == 0)
+          alert("寄件者電子郵件欄位不可以空白哦！");
+        else if (document.myForm.to_name.value.length == 0)
+          alert("收件者欄位不可以空白哦！");
+        else if (document.myForm.to_email.value.length == 0)
+          alert("收件者電子郵件欄位不可以空白哦！");
+        else if (document.myForm.subject.value.length == 0)
+          alert("郵件主旨欄位不可以空白哦！");
+        else if (document.myForm.message.value.length == 0)
+          alert("郵件內容欄位不可以空白哦！");
+        else
+          myForm.submit();
+      }
+    </script>
+  </head>
+  <body>
+    <p align="center"><img src="title.jpg"></p>
+    <form name="myForm" action="send01.php" method="post">
+      <table width="800" align="center" cellspacing="2" cellpadding="3">
+        <tr bgcolor="#FFFFA1">
+          <td width="12%">寄件者</td>
+          <td width="25%">
+            <input type="text" name="from_name" size="10">
+          </td>
+          <td width="63%">電子郵件地址
+            <input type="text" name="from_email" size="30">
+          </td>
+        </tr>
+        <tr bgcolor="#FFFFF0">
+          <td>收件者</td>
+          <td><input type="text" name="to_name" size="10"></td>
+          <td>電子郵件地址
+            <input name="to_email" type="text" size="30">
+          </td>
+        </tr>
+        <tr bgcolor="#FFFFA1">
+          <td>郵件主旨</td>
+          <td colspan="2">
+            <input type="text" name="subject" size="80">
+          </td>
+        </tr>
+        <tr bgcolor="#FFFFF0">
+          <td>郵件內容</td>
+          <td colspan="2">
+            <textarea name="message" cols="62" rows="5"></textarea>
+          </td>
+        </tr>
+       </table>
+      <p align="center"><input type="button" value="傳送郵件" onClick="send()"></p>
+    </form>
+  </body>
+</html>
