@@ -1,7 +1,7 @@
 <?php
-$clientID = getenv('GMAIL_OAUTH_CLIENT_ID') ?: '';
-$clientSecret = getenv('GMAIL_OAUTH_CLIENT_SECRET') ?: '';
-$refreshToken = getenv('GMAIL_OAUTH_REFRESH_TOKEN') ?: '';
+$clientId = '你的_CLIENT_ID';
+$clientSecret = '你的_CLIENT_SECRET';
+$refreshToken = '你的_REFRESH_TOKEN';
 // prepare the mail contents
 $email = 'hw.pcchen@gmail.com';
 // $email = 'pcchen002@gmail.com';
