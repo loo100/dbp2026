@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <title>AJAX Demo - Server Time</title>
+</head>
+<body>
+  <button id="btn">取得伺服器時間</button>
+  <p id="output">尚未取得</p>
+
+  <script>
+    document.getElementById('btn').addEventListener('click', async () => {
+      const res = await fetch('./a_time.php');
+      const data = await res.json();
+      document.getElementById('output').textContent = data.server_time;
+    });
+  </script>
+</body>
+</html>

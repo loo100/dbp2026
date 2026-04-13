@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>搜尋功能</title>
+    <style>
+        .search-box { position: relative; width: 300px; }
+        .search-input { width: 100%; padding: 8px; }
+        .dropdown { position: absolute; top: 100%; width: 100%; border: 1px solid #ddd; 
+                   background: #fff; display: none; }
+        .dropdown-item { padding: 8px; cursor: pointer; }
+        .dropdown-item:hover { background: #f0f0f0; }
+    </style>
+</head>
+<body>
+    <h1>產品搜尋</h1>
+    <div class="search-box">
+        <input type="text" id="search" class="search-input" placeholder="搜尋產品...">
+        <div id="dropdown" class="dropdown"></div>
+    </div>
+
+    <script>
+        let searchTimeout;
+
+        document.getElementById('search').addEventListener('input', function () {
+            const query = this.value;
+
+            // 防抖：200ms 後才發送請求
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                if (query.length === 0) {
+                    document.getElementById('dropdown').style.display = 'none';
+                    return;
+                }
+
+                fetch('search_product.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query: query })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const dropdown = document.getElementById('dropdown');
+                    if (data.results.length === 0) {
+                        dropdown.innerHTML = '<div class="dropdown-item">無搜尋結果</div>';
+                    } else {
+                        dropdown.innerHTML = data.results.map(product =>
+                            `<div class="dropdown-item">${product.name} - NT$${product.price}</div>`
+                        ).join('');
+                    }
+                    dropdown.style.display = 'block';
+                });
+            }, 200);
+        });
+    </script>
+</body>
+</html>

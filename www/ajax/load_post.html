@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>無限滾動</title>
+    <style>
+        body { font-family: Arial; }
+        #content { max-width: 600px; margin: 0 auto; }
+        .post { border: 1px solid #ddd; padding: 12px; margin-bottom: 12px; }
+        .post h3 { margin: 0; }
+        .post p { margin: 8px 0 0 0; color: #666; }
+        #loading { text-align: center; color: #999; }
+    </style>
+</head>
+<body>
+    <h1>文章列表（無限滾動）</h1>
+    <div id="content"></div>
+    <div id="loading">載入中...</div>
+
+    <script>
+        let page = 1;
+        let isLoading = false;
+
+        function loadMore() {
+            if (isLoading) return;
+            isLoading = true;
+
+            fetch('load_post.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ page: page })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const content = document.getElementById('content');
+                data.posts.forEach(post => {
+                    content.innerHTML += `
+                        <div class="post">
+                            <h3>${post.title}</h3>
+                            <p>${post.content}</p>
+                        </div>
+                    `;
+                });
+                page++;
+                isLoading = false;
+                document.getElementById('loading').style.display = 'none';
+            });
+        }
+
+        // 初始載入
+        loadMore();
+
+        // 滾動到底部時載入更多
+        window.addEventListener('scroll', function () {
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200) {
+                loadMore();
+            }
+        });
+    </script>
+</body>
+</html>
