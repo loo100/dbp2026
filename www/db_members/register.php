@@ -37,6 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // 執行並存入資料庫
             $stmt->execute([$user_name, $user_email, $user_pass]);
             $msg = "<p style='color:green;'>✅ 註冊成功！歡迎你，$user_name 。</p>";
+            echo "<script>alert('註冊成功！'); window.location.href = 'login.php';</script>";
         } catch (PDOException $e) {
             $msg = "<p style='color:red;'>❌ 註冊失敗: " . $e->getMessage() . "</p>";
         }
