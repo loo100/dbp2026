@@ -4,9 +4,12 @@
 
 ## 功能說明
 
-- **index.php** - 讀取並顯示所有留言，提供表單輸入新留言
-- **post.php** - 接收表單提交，將留言寫入資料庫
+- **index.php** - 讀取並顯示所有留言，提供表單輸入新留言，支援分頁、留言數統計與管理操作
+- **post.php** - 接收表單提交，將留言寫入資料庫，留言預設為待審核
+- **delete.php** - 刪除留言功能
+- **approve.php** - 管理員批准留言，將狀態改為已審核
 - **db_config.php** - 資料庫連接配置（PDO）
+- **setup.php** - 自動建立 `test_db` 與 `guestbook` 資料表，並支援欄位升級
 
 ## 資料庫設置
 
@@ -28,6 +31,7 @@ CREATE TABLE guestbook (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     message TEXT NOT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 ```
@@ -40,10 +44,29 @@ CREATE TABLE guestbook (
 
 ```php
 $host = 'localhost';      // 資料庫伺服器
-$db = 'test_db';             // 資料庫名稱
-$user = 'root';           // 資料庫使用者
-$password = '';           // 資料庫密碼
+$db = 'test_db';           // 資料庫名稱
+$user = 'root';            // 資料庫使用者
+$password = '';            // 資料庫密碼
 ```
+
+或可使用環境變數：
+
+- `DB_HOST`
+- `DB_NAME`
+- `DB_USER`
+- `DB_PASSWORD`
+
+### 4. 自動建立資料庫與資料表
+
+如果你還沒有建立 `test_db`，可以直接開啟瀏覽器執行：
+
+```text
+http://localhost/U1333055/dbp2026/www/guestbook/setup.php
+```
+
+或視你的 Laragon 網站根目錄調整路徑。此頁面會自動建立 `test_db` 和 `guestbook` 資料表。
+
+> 建立完成後，請移除或保護 `setup.php`，避免未授權使用。
 
 ## 執行方式
 
@@ -79,8 +102,11 @@ $stmt->execute([$name, $message]);
 
 ```
 guestbook/
-├── index.php          (讀取和顯示留言)
-├── post.php           (寫入留言到資料庫)
+├── index.php          (讀取和顯示留言，分頁與管理操作)
+├── post.php           (寫入留言到資料庫，留言預設為待審核)
+├── delete.php         (刪除留言功能)
+├── approve.php        (批准留言功能)
+├── setup.php          (自動建立資料庫與資料表)
 ├── db_config.php      (資料庫連接配置)
 ├── guestbook.sql      (建立資料表的 SQL)
 └── README.md          (說明文件)
